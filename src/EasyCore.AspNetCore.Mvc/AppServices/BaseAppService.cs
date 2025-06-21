@@ -21,7 +21,6 @@ namespace EasyCore.AspNetCore.Mvc.AppService
 
         public BaseAppService()
         {
-
         }
     }
 }
