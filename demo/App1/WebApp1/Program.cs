@@ -1,7 +1,8 @@
+using EasyCore.AspNetCore.Mvc.RemoteServices;
 using EasyCore.AspNetCore.Mvc.AppService;
 using EasyCore.AspNetCore.Mvc.DynamicApi;
-using EasyCore.Consul;
 using EasyCore.Dependencie;
+using EasyCore.Consul;
 
 namespace WebApp1
 {
@@ -19,10 +20,14 @@ namespace WebApp1
             builder.Services.EasyCoreDynamicApi();
             // Use EasyCoreAppServices
             builder.Services.EasyCoreAppServices();
+            // Use EasyCoreRemoteApiClients
+            builder.Services.EasyCoreRemoteApiClients();
             // Use EasyCoreDependencie
             builder.Services.EasyCoreDependencie();
             // Use EasyCoreConsul
             builder.EasyCoreConsul(args).EasyCoreConsulCache().EasyCoreConsulLocking().EasyCoreConsulServer();
+            // Use EasyCoreRemoteApiClients
+            builder.Services.EasyCoreRemoteApiConsulClients();
 
             var app = builder.Build();
 
