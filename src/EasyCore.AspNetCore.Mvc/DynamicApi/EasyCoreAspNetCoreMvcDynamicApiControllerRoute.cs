@@ -21,6 +21,7 @@ public class EasyCoreAspNetCoreMvcDynamicApiControllerRoute : IApplicationModelC
                     var n when n.StartsWith("Put") => "PUT",
 
                     var n when n.StartsWith("Delete") => "DELETE",
+
                     _ => "GET"
                 };
 
