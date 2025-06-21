@@ -16,6 +16,7 @@ namespace EasyCore.AspNetCore.Mvc.AppService
         public Guid Create(SequentialGuidType guidType)
         {
             var randomBytes = new byte[10];
+
             RandomNumberGenerator.GetBytes(randomBytes);
 
             long timestamp = DateTime.UtcNow.Ticks / 10000L;
@@ -53,6 +54,7 @@ namespace EasyCore.AspNetCore.Mvc.AppService
                     Buffer.BlockCopy(randomBytes, 0, guidBytes, 0, 10);
 
                     Buffer.BlockCopy(timestampBytes, 2, guidBytes, 10, 6);
+
                     break;
             }
 
