@@ -8,6 +8,12 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
 
     public static class RemoteApiClientExtensions
     {
+        /// <summary>
+        /// Register remote API clients.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public static IServiceCollection EasyCoreRemoteApiClients(this IServiceCollection services)
         {
             services.AddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();

@@ -8,6 +8,12 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
     /// </summary>
     public static class RemoteApiConsulClientExtensions
     {
+        /// <summary>
+        /// Register remote API clients with Consul.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         public static IServiceCollection EasyCoreRemoteApiConsulClients(this IServiceCollection services)
         {
             using var provider = services.BuildServiceProvider();
