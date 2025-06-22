@@ -29,7 +29,7 @@ namespace WebApp2
             // Use EasyCoreRemoteApiClients
             builder.Services.EasyCoreRemoteApiConsulClients();
             // Use EasyCoreRemoteApiClients
-            builder.Services.EasyCoreK8sRemoteApiClients(options =>
+            builder.Services.EasyCoreRemoteApiK8sClients(options =>
             {
                 options.K8sNamespace = "default";
 

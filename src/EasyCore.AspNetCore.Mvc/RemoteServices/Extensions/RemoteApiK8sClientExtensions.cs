@@ -6,7 +6,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
 {
     public static class RemoteApiK8sClientExtensions
     {
-        public static IServiceCollection EasyCoreK8sRemoteApiClients(this IServiceCollection services, Action<K8sOption> action)
+        public static IServiceCollection EasyCoreRemoteApiK8sClients(this IServiceCollection services, Action<K8sOption> action)
         {
             services.AddOptions();
 
