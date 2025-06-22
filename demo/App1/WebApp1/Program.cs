@@ -28,7 +28,7 @@ namespace WebApp1
             builder.EasyCoreConsul(args).EasyCoreConsulCache().EasyCoreConsulLocking().EasyCoreConsulServer();
             // Use EasyCoreRemoteApiClients
             builder.Services.EasyCoreRemoteApiConsulClients();
-            // Use EasyCoreRemoteApiClients
+            // Use EasyCoreRemoteApiK8sClients
             builder.Services.EasyCoreRemoteApiK8sClients(options =>
             {
                 options.K8sNamespace = "default";
