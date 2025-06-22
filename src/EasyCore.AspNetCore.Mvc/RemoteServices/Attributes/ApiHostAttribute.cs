@@ -10,7 +10,7 @@
 
         public ApiHostAttribute(string configKey)
         {
-            ConfigKey = configKey;
+            ConfigKey = configKey ?? throw new ArgumentNullException(nameof(configKey));
         }
     }
 }

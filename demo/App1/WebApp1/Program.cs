@@ -28,6 +28,13 @@ namespace WebApp1
             builder.EasyCoreConsul(args).EasyCoreConsulCache().EasyCoreConsulLocking().EasyCoreConsulServer();
             // Use EasyCoreRemoteApiClients
             builder.Services.EasyCoreRemoteApiConsulClients();
+            // Use EasyCoreRemoteApiClients
+            builder.Services.EasyCoreK8sRemoteApiClients(options =>
+            {
+                options.K8sNamespace = "default";
+
+                options.K8sClusterDomain = "svc.cluster.local";
+            });
 
             var app = builder.Build();
 
