@@ -14,6 +14,8 @@ namespace App1.AppService
         {
             await Task.CompletedTask;
 
+            var token = CurrentToken.RequestToken;
+
             return GuidFactory.NewGuid;
         }
     }
