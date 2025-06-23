@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App1.AppService", "demo\App
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyCore.AspNetCore.Mvc", "src\EasyCore.AspNetCore.Mvc\EasyCore.AspNetCore.Mvc.csproj", "{6C13574D-41FE-4E44-9B84-380404DD434C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App1.EFCore", "demo\App1\App1.EFCore\App1.EFCore.csproj", "{5A420A53-173F-42EB-9A92-3A19571B2671}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{6C13574D-41FE-4E44-9B84-380404DD434C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C13574D-41FE-4E44-9B84-380404DD434C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C13574D-41FE-4E44-9B84-380404DD434C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A420A53-173F-42EB-9A92-3A19571B2671}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A420A53-173F-42EB-9A92-3A19571B2671}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A420A53-173F-42EB-9A92-3A19571B2671}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A420A53-173F-42EB-9A92-3A19571B2671}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +79,7 @@ Global
 		{A4BA23CC-1540-4A7F-950B-AFED409694AC} = {5CB541FA-1FE9-4F56-9991-2E6AA1B6E402}
 		{FFAD9217-4042-462C-9AB0-2493E997AEA9} = {D7EE7C57-C1B3-496C-9E78-8F4F1F246B55}
 		{6C13574D-41FE-4E44-9B84-380404DD434C} = {D23E8336-4A63-4862-B432-8FBDDBD6C663}
+		{5A420A53-173F-42EB-9A92-3A19571B2671} = {D7EE7C57-C1B3-496C-9E78-8F4F1F246B55}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16E13F6B-EC2E-4D0F-8455-5B3E8523C173}

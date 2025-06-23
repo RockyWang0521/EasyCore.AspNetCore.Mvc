@@ -3,6 +3,8 @@ using EasyCore.AspNetCore.Mvc.AppService;
 using EasyCore.AspNetCore.Mvc.DynamicApi;
 using EasyCore.Dependencie;
 using EasyCore.Consul;
+using App1.EFCore;
+using EasyCore.EFCoreRepository;
 
 namespace WebApp1
 {
@@ -35,6 +37,11 @@ namespace WebApp1
 
                 options.K8sClusterDomain = "svc.cluster.local";
             });
+
+            builder.Services.AddDbContext<TestDbContext>();
+
+            // Use EasyCore EFCore Repository
+            builder.Services.EasyCoreEFCoreRepository();
 
             var app = builder.Build();
 

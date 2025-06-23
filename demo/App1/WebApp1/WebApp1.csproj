@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\App1.AppService\App1.AppService.csproj" />
+    <ProjectReference Include="..\App1.EFCore\App1.EFCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
