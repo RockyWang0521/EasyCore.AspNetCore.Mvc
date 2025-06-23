@@ -1,11 +1,15 @@
 ﻿using App1.AppService.Contracts;
 using EasyCore.AspNetCore.Mvc.AppService;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace App1.AppService
 {
     public class App1TestAppService : EasyCoreAppService, IApp1TestAppService
     {
-        public App1TestAppService() { }
+        private readonly ILogger<App1TestAppService> _logger;
+
+        public App1TestAppService(ILogger<App1TestAppService> logger) => _logger = logger;
 
         public async Task<Guid> GetGuid()
         {
@@ -24,6 +28,42 @@ namespace App1.AppService
         public void GetGuid2()
         {
 
+        }
+
+        public async Task GetGuids1()
+        {
+            Stopwatch sw = new Stopwatch();
+
+            sw.Start();
+
+            for (int i = 0; i < 1000; i++)
+            {
+                _logger.LogInformation($"{GuidFactory.NewGuid}");
+            }
+
+            sw.Stop();
+
+            _logger.LogInformation($"GetGuids1: {sw.ElapsedMilliseconds} ms");
+
+            await Task.CompletedTask;
+        }
+
+        public async Task GetGuids2()
+        {
+            Stopwatch sw = new Stopwatch();
+
+            sw.Start();
+
+            for (int i = 0; i < 1000; i++)
+            {
+                _logger.LogInformation($"{Guid.NewGuid()}");
+            }
+
+            sw.Stop();
+
+            _logger.LogInformation($"GetGuids2: {sw.ElapsedMilliseconds} ms");
+
+            await Task.CompletedTask;
         }
 
         public async Task<PostDto> PostDto(PostDto dto)

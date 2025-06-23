@@ -13,5 +13,9 @@ namespace App1.AppService.Contracts
         Task GetGuid1();
 
         void GetGuid2();
+
+        Task GetGuids1();
+
+        Task GetGuids2();
     }
 }
