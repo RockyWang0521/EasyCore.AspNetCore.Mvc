@@ -10,5 +10,9 @@
     <PackageReference Include="EasyCore.Dependencie" Version="1.0.2" />
     <PackageReference Include="EasyCore.Consul" Version="1.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\App1\App1.AppService.Contracts\App1.AppService.Contracts.csproj" />
+  </ItemGroup>
   
 </Project>

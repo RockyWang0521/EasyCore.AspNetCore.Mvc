@@ -6,14 +6,12 @@ namespace App1.AppService.Contracts
     [ApiHost("Service1")]
     public interface IApp1TestAppService : IRemoteAppService, ITransientDependencie
     {
-        Task<Guid> GetGuid();
+        Task PostDto(PostDto dto);
 
-        Task<PostDto> PostDto(PostDto dto);
+        Task<PostDto> GetDto();
 
-        Task GetGuid1();
+        Task PutDto(PostDto dto);
 
-        void GetGuid2();
-
-        Task GetGuids1();
+        Task DeleteDto(int id);
     }
 }

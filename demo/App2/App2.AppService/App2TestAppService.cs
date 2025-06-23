@@ -7,7 +7,7 @@ namespace App2.AppService
     public class App2TestAppService : EasyCoreAppService, IApp2TestAppService
     {
         private readonly IApp1TestAppService _app1TestAppService;
-        private readonly IApp1ConsulTestAppService  _app1ConsulTestAppService;
+        private readonly IApp1ConsulTestAppService _app1ConsulTestAppService;
 
         public App2TestAppService(IApp1TestAppService app1TestAppService, IApp1ConsulTestAppService app1ConsulTestAppService)
         {
@@ -15,24 +15,14 @@ namespace App2.AppService
             _app1ConsulTestAppService = app1ConsulTestAppService;
         }
 
-        public async Task<Guid> GetTest()
+        public async Task<PostDto> GetRemoteApi()
         {
-            return await _app1TestAppService.GetGuid();
+            return await _app1TestAppService.GetDto();
         }
 
-        public async Task GetTest1()
+        public async Task<PostDto> GetRemoteConsulApi()
         {
-            await _app1TestAppService.GetGuid1();
-        }
-
-        public void GetTest2()
-        {
-            _app1TestAppService.GetGuid2();
-        }
-
-        public async Task<Guid> GetTest3()
-        {
-            return await _app1ConsulTestAppService.GetGuid();
+            return await _app1TestAppService.GetDto();
         }
     }
 }

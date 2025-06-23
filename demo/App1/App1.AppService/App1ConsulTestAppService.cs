@@ -1,22 +1,35 @@
 ﻿using App1.AppService.Contracts;
 using EasyCore.AspNetCore.Mvc.AppService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace App1.AppService
 {
     public class App1ConsulTestAppService : EasyCoreAppService, IApp1ConsulTestAppService
     {
-        public async Task<Guid> GetGuid()
+        public async Task DeleteDto(int id)
+        {
+            // do something
+
+            await Task.CompletedTask;
+        }
+
+        public async Task<PostDto> GetDto()
         {
             await Task.CompletedTask;
+            return new PostDto { Id = 1, Title = "Hello World" };
+        }
 
-            var token = CurrentToken.RequestToken;
+        public async Task PostDto(PostDto dto)
+        {
+            // do something
 
-            return GuidFactory.NewGuid;
+            await Task.CompletedTask;
+        }
+
+        public async Task PutDto(PostDto dto)
+        {
+            // do something
+
+            await Task.CompletedTask;
         }
     }
 }

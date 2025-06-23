@@ -11,6 +11,12 @@ namespace App1.AppService.Contracts
     [ConsulService("App1")]
     public interface IApp1ConsulTestAppService : IRemoteAppService, ITransientDependencie
     {
-        Task<Guid> GetGuid();
+        Task PostDto(PostDto dto);
+
+        Task<PostDto> GetDto();
+
+        Task PutDto(PostDto dto);
+
+        Task DeleteDto(int id);
     }
 }
