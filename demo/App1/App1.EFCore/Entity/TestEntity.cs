@@ -7,6 +7,5 @@ namespace App1.EFCore.Entity
         public string Name { get; set; }
 
         public int Age { get; set; }
-
     }
 }

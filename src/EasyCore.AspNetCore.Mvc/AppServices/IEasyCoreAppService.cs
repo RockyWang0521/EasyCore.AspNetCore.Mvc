@@ -1,6 +1,6 @@
 ﻿namespace EasyCore.AspNetCore.Mvc.AppService
 {
-    public interface IEasyCoreAppService : IEasyCoreUnitOfWork
+    public interface IEasyCoreAppService 
     {
     }
 }
