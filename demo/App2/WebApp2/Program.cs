@@ -20,10 +20,10 @@ namespace WebApp2
             builder.Services.EasyCoreDynamicApi();
             // Use EasyCoreAppServices
             builder.Services.EasyCoreAppServices();
-            // Use EasyCoreRemoteApiClients
-            builder.Services.EasyCoreRemoteApiClients();
             // Use EasyCoreDependencie
             builder.Services.EasyCoreDependencie();
+            // Use EasyCoreRemoteApiClients
+            builder.Services.EasyCoreRemoteApiClients();
             // Use EasyCoreConsul
             builder.EasyCoreConsul(args).EasyCoreConsulCache().EasyCoreConsulLocking().EasyCoreConsulServer();
             // Use EasyCoreRemoteApiClients
