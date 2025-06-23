@@ -4,8 +4,6 @@
     {
         public static IServiceCollection EasyCoreDynamicApi(this IServiceCollection service)
         {
-            service.AddScoped<EasyCoreUnitOfWorkFilter>();
-
             service.AddControllers(options =>
             {
                 options.Conventions
@@ -13,9 +11,6 @@
 
                 options.Conventions
                 .Add(new EasyCoreAspNetCoreMvcDynamicApiControllerRoute());
-
-                options.Filters
-                .AddService<EasyCoreUnitOfWorkFilter>();
             });
 
             return service;

@@ -64,6 +64,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
             foreach (var iface in interfaces)
             {
                 var attr = iface.GetCustomAttribute<ConsulServiceAttribute>();
+
                 if (attr == null) continue;
 
                 services.AddTransient(iface, sp =>
