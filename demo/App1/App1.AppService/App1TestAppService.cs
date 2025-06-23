@@ -48,24 +48,6 @@ namespace App1.AppService
             await Task.CompletedTask;
         }
 
-        public async Task GetGuids2()
-        {
-            Stopwatch sw = new Stopwatch();
-
-            sw.Start();
-
-            for (int i = 0; i < 10000; i++)
-            {
-                Console.WriteLine($"{Guid.NewGuid()}");
-            }
-
-            sw.Stop();
-
-            _logger.LogInformation($"GetGuids2: {sw.ElapsedMilliseconds} ms");
-
-            await Task.CompletedTask;
-        }
-
         public async Task<PostDto> PostDto(PostDto dto)
         {
             await Task.CompletedTask;
