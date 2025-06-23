@@ -36,9 +36,9 @@ namespace App1.AppService
 
             sw.Start();
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 10000; i++)
             {
-                _logger.LogInformation($"{GuidFactory.NewGuid}");
+                Console.WriteLine($"{GuidFactory.NewGuid}");
             }
 
             sw.Stop();
@@ -54,9 +54,9 @@ namespace App1.AppService
 
             sw.Start();
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 10000; i++)
             {
-                _logger.LogInformation($"{Guid.NewGuid()}");
+                Console.WriteLine($"{Guid.NewGuid()}");
             }
 
             sw.Stop();
