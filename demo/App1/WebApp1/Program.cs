@@ -3,10 +3,6 @@ using EasyCore.AspNetCore.Mvc.AppService;
 using EasyCore.AspNetCore.Mvc.DynamicApi;
 using EasyCore.Dependencie;
 using EasyCore.Consul;
-using App1.EFCore;
-using EasyCore.EFCoreRepository;
-using Microsoft.EntityFrameworkCore;
-using App1.EFCore.Repository;
 
 namespace WebApp1
 {
@@ -20,10 +16,6 @@ namespace WebApp1
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<TestDbContext>(options =>
-            {
-                options.UseSqlServer("Server=192.168.157.142;Database=Demo;User Id=sa;Password=Sa123456;TrustServerCertificate=True;Connect Timeout=10;");
-            });
             // Use EasyCoreDynamicApi
             builder.Services.EasyCoreDynamicApi();
             // Use EasyCoreAppServices
@@ -43,8 +35,6 @@ namespace WebApp1
 
                 options.K8sClusterDomain = "svc.cluster.local";
             });
-            // Use EasyCore EFCore Repository
-            builder.Services.EasyCoreEFCoreRepository();
 
             var app = builder.Build();
 
