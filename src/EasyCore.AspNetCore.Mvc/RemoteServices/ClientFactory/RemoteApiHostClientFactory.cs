@@ -97,7 +97,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                         .GetMethod(nameof(InvokeWithResultAsyncGeneric), BindingFlags.Instance | BindingFlags.NonPublic)!
                         .MakeGenericMethod(resultType);
 
-                    return method.Invoke(this, new object[] { httpMethod, route, args })!;
+                    return method.Invoke(this, new object[] { httpMethod, route, args! })!;
                 }
 
                 var syncResponse = SendRequest(httpMethod, route, args).GetAwaiter().GetResult();
@@ -186,7 +186,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                     return $"{route}?{query}";
                 }
 
-                return $"{route}?param={Uri.EscapeDataString(args[0].ToString()!)}";
+                return $"{route}?param={Uri.EscapeDataString(args[0]!.ToString()!)}";
             }
 
             private HttpContent CreateJsonContent(object?[]? args)

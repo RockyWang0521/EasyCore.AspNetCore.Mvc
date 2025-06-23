@@ -91,7 +91,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                         .GetMethod(nameof(InvokeWithResultAsyncGeneric), BindingFlags.Instance | BindingFlags.NonPublic)!
                         .MakeGenericMethod(resultType);
 
-                    return method.Invoke(this, new object[] { httpMethod, route, args })!;
+                    return method.Invoke(this, new object[] { httpMethod, route, args! })!;
                 }
                 var response = SendRequest(httpMethod, route, args).GetAwaiter().GetResult();
 
