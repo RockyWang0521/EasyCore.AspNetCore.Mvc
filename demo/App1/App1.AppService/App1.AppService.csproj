@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\App1.AppService.Contracts\App1.AppService.Contracts.csproj" />
-    <ProjectReference Include="..\App1.EFCore\App1.EFCore.csproj" />
   </ItemGroup>
 
 </Project>
