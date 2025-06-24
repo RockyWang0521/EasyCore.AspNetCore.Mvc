@@ -22,7 +22,7 @@ namespace App2.AppService
 
         public async Task<PostDto> GetRemoteConsulApi()
         {
-            return await _app1TestAppService.GetDto();
+            return await _app1ConsulTestAppService.GetDto();
         }
     }
 }
