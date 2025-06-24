@@ -31,5 +31,18 @@ namespace App1.AppService
 
             await Task.CompletedTask;
         }
+
+        public async Task EasyCoreAppService()
+        {
+            var currentTenant = CurrentTenant;
+
+            var currentUser = CurrentUser.UserName;
+
+            var guid = GuidFactory.NewGuid;
+
+            var token = CurrentToken.RequestToken;
+
+            await Task.CompletedTask;
+        }
     }
 }

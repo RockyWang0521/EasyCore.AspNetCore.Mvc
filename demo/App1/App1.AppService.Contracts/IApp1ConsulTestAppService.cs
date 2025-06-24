@@ -18,5 +18,7 @@ namespace App1.AppService.Contracts
         Task PutDto(PostDto dto);
 
         Task DeleteDto(int id);
+
+        Task EasyCoreAppService();
     }
 }
