@@ -10,15 +10,27 @@
     <IncludeSymbols>False</IncludeSymbols>
     <RepositoryType>gitee</RepositoryType>
     <Authors>WZHY</Authors>
-    <Description>.net core repository.</Description>
-    <PackageProjectUrl>https://gitee.com/wzhy-0521/easy-core.-consul.git</PackageProjectUrl>
+    <Description>.net core EasyCore.AspNetCore.Mvc.</Description>
+    <PackageProjectUrl>https://gitee.com/wzhy-0521/easy-core.-asp-net-core.-mvc.git</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <Version>1.0.0</Version>
     <OutputType>Library</OutputType>
+    <RepositoryUrl>https://gitee.com/wzhy-0521/easy-core.-asp-net-core.-mvc.git</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\png\EasyCoreLogo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
  
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
