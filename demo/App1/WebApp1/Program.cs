@@ -25,16 +25,16 @@ namespace WebApp1
             // Use EasyCoreRemoteApiClients
             builder.Services.EasyCoreRemoteApiClients();
             // Use EasyCoreConsul
-            builder.EasyCoreConsul(args).EasyCoreConsulCache().EasyCoreConsulLocking().EasyCoreConsulServer();
+            //builder.EasyCoreConsul(args).EasyCoreConsulCache().EasyCoreConsulLocking().EasyCoreConsulServer();
             // Use EasyCoreRemoteApiClients
             builder.Services.EasyCoreRemoteApiConsulClients();
             // Use EasyCoreRemoteApiK8sClients
-            builder.Services.EasyCoreRemoteApiK8sClients(options =>
-            {
-                options.K8sNamespace = "default";
+            //builder.Services.EasyCoreRemoteApiK8sClients(options =>
+            //{
+            //    options.K8sNamespace = "default";
 
-                options.K8sClusterDomain = "svc.cluster.local";
-            });
+            //    options.K8sClusterDomain = "svc.cluster.local";
+            //});
 
             var app = builder.Build();
 
@@ -45,7 +45,7 @@ namespace WebApp1
             }
 
             // Use EasyCoreConsul
-            app.UseEasyCoreConsul();
+            //app.UseEasyCoreConsul();
 
             app.UseAuthorization();
 
