@@ -63,6 +63,7 @@ namespace Provider.Host
                     Id = Guid.NewGuid(),
                     Name = "Hello World",
                     Age = 18,
+                    CreateTime = DateTime.Now,
                     ConcurrencyStamp = Guid.NewGuid().ToString("N")
                 });
                 db.SaveChanges();
