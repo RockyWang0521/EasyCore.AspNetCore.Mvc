@@ -11,19 +11,15 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// <summary>
         /// Scans loaded assemblies for <see cref="IRemoteAppService"/> interfaces marked with
         /// <see cref="ApiHostAttribute"/> and registers interface-only HTTP proxies.
-        /// Local host implementations are kept when remote configuration is missing.
+        /// Interfaces that already have a local concrete implementation are skipped (provider host).
+        /// Base URLs are read from <c>RemoteServices:{ConfigKey}</c> when the client is resolved.
         /// </summary>
         /// <param name="services">The service collection to configure.</param>
         /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when a remote interface requires a missing <c>RemoteServices:{ConfigKey}</c> value.
-        /// </exception>
         public static IServiceCollection EasyCoreRemoteApiClients(this IServiceCollection services)
         {
             services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
             services.AddHttpContextAccessor();
-
-            var configuration = RemoteApiRegistrationHelper.TryGetConfiguration(services);
 
             foreach (var iface in RemoteApiRegistrationHelper.FindRemoteInterfaces())
             {
@@ -31,13 +27,9 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                 if (attr == null)
                     continue;
 
-                var hasConfig = RemoteApiRegistrationHelper.HasApiHostConfig(configuration, attr.ConfigKey);
-                if (!RemoteApiRegistrationHelper.ShouldRegisterRemoteProxy(services, iface, requireRemoteConfig: true, hasConfig))
+                // Provider hosts already have a concrete AppService; do not replace it with an HTTP proxy.
+                if (RemoteApiRegistrationHelper.HasLocalImplementation(services, iface))
                     continue;
-
-                if (!hasConfig)
-                    throw new InvalidOperationException(
-                        $"Configure RemoteServices:{attr.ConfigKey} for remote interface {iface.Name}.");
 
                 var clientName = iface.FullName!;
                 var configKey = attr.ConfigKey;

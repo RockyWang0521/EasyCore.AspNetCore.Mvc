@@ -14,6 +14,6 @@ namespace Provider.AppService.Contracts
 
         Task DeleteDto(int id);
 
-        Task EasyCoreAppService();
+        Task GetContextInfo();
     }
 }

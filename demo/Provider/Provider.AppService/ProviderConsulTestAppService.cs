@@ -10,7 +10,7 @@ namespace Provider.AppService
             await Task.CompletedTask;
         }
 
-        public async Task EasyCoreAppService()
+        public async Task GetContextInfo()
         {
             var currentTenant = CurrentTenant;
             var currentUser = CurrentUser.UserName;

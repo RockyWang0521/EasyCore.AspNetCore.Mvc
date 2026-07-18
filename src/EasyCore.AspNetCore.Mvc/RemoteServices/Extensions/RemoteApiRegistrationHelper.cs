@@ -70,8 +70,9 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
             }
 
             // Fallback: host apps may expose AppServices via MVC without an interface DI mapping yet.
-            return FindRemoteInterfaces()
-                .SelectMany(_ => AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).SelectMany(SafeGetTypes))
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a => !a.IsDynamic)
+                .SelectMany(SafeGetTypes)
                 .Any(t => t.IsClass && !t.IsAbstract && iface.IsAssignableFrom(t));
         }
 

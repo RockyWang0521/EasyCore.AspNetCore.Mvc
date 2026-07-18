@@ -1,6 +1,7 @@
 using EasyCore.AspNetCore.Mvc.AppService;
 using EasyCore.AspNetCore.Mvc.DynamicApi;
 using EasyCore.AspNetCore.Mvc.RemoteServices;
+using EasyCore.Consul;
 using EasyCore.Dependencie;
 
 namespace Consumer.Host
@@ -19,8 +20,8 @@ namespace Consumer.Host
             builder.Services.EasyCoreAppServices();
             builder.Services.EasyCoreDependencie();
             builder.Services.EasyCoreRemoteApiClients();
-            //builder.EasyCoreConsul(args).EasyCoreConsulCache().EasyCoreConsulLocking().EasyCoreConsulServer();
             builder.Services.EasyCoreRemoteApiConsulClients();
+            builder.EasyCoreConsul(args).EasyCoreConsulCache().EasyCoreConsulLocking().EasyCoreConsulServer();
             //builder.Services.EasyCoreRemoteApiK8sClients(options =>
             //{
             //    options.K8sNamespace = "default";
@@ -35,7 +36,7 @@ namespace Consumer.Host
                 app.UseSwaggerUI();
             }
 
-            //app.UseEasyCoreConsul();
+            app.UseEasyCoreConsul();
 
             app.UseAuthorization();
             app.MapControllers();

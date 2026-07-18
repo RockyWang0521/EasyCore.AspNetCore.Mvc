@@ -1,0 +1,12 @@
+# Local Consul for EasyCore Provider/Consumer demos.
+# Start: docker compose -f demo/docker-compose.consul.yml up -d
+# UI:    http://localhost:8500
+services:
+  consul:
+    image: hashicorp/consul:1.15
+    container_name: consul
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    command: ["agent", "-server", "-bootstrap", "-ui", "-client=0.0.0.0"]
+    restart: unless-stopped

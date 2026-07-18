@@ -12,24 +12,24 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// <summary>
         /// Registers Consul discovery and interface-only proxies for contracts marked with
         /// <see cref="ConsulServiceAttribute"/>. Skips interfaces that already have a local implementation.
+        /// The Consul address is read from <c>Consul:ConsulAddress</c> when the client is resolved.
         /// </summary>
         /// <param name="services">The service collection to configure.</param>
         /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
-        /// <exception cref="ArgumentException">Thrown when <c>Consul:ConsulAddress</c> is not configured.</exception>
         public static IServiceCollection EasyCoreRemoteApiConsulClients(this IServiceCollection services)
         {
             services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
             services.AddHttpContextAccessor();
 
-            var configuration = RemoteApiRegistrationHelper.TryGetConfiguration(services);
-            var consulAddress = configuration?["Consul:ConsulAddress"];
-            if (string.IsNullOrWhiteSpace(consulAddress))
-                throw new ArgumentException("Consul address is not configured (Consul:ConsulAddress).");
-
-            services.TryAddSingleton<IConsulClient>(_ => new ConsulClient(config =>
+            services.TryAddSingleton<IConsulClient>(sp =>
             {
-                config.Address = new Uri(consulAddress);
-            }));
+                var configuration = sp.GetRequiredService<IConfiguration>();
+                var consulAddress = configuration["Consul:ConsulAddress"];
+                if (string.IsNullOrWhiteSpace(consulAddress))
+                    throw new InvalidOperationException("Consul address is not configured (Consul:ConsulAddress).");
+
+                return new ConsulClient(config => config.Address = new Uri(consulAddress));
+            });
 
             services.TryAddSingleton<ConsulServiceDiscovery>();
 
@@ -39,9 +39,8 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                 if (attr == null)
                     continue;
 
-                // Host apps that already registered a concrete implementation keep the local service.
-                if (!RemoteApiRegistrationHelper.ShouldRegisterRemoteProxy(
-                        services, iface, requireRemoteConfig: false, hasRemoteConfig: false))
+                // Provider hosts already have a concrete AppService; do not replace it with an HTTP proxy.
+                if (RemoteApiRegistrationHelper.HasLocalImplementation(services, iface))
                     continue;
 
                 var clientName = iface.FullName!;

@@ -1,6 +1,7 @@
 using EasyCore.AspNetCore.Mvc.AppService;
 using EasyCore.AspNetCore.Mvc.DynamicApi;
 using EasyCore.AspNetCore.Mvc.RemoteServices;
+using EasyCore.Consul;
 using EasyCore.Dependencie;
 using EasyCore.EFCoreRepository;
 using Provider.EFCore;
@@ -24,12 +25,9 @@ namespace Provider.Host
             builder.Services.EasyCoreDependencie();
             builder.Services.EasyCoreEFCoreRepository();
             builder.Services.EasyCoreRemoteApiClients();
-            // builder.Services.EasyCoreRemoteApiConsulClients();
-            //builder.Services.EasyCoreRemoteApiK8sClients(options =>
-            //{
-            //    options.K8sNamespace = "default";
-            //    options.K8sClusterDomain = "svc.cluster.local";
-            //});
+
+            // Register this Provider instance into Consul (ServiceName=Provider).
+            builder.EasyCoreConsul(args).EasyCoreConsulCache().EasyCoreConsulLocking().EasyCoreConsulServer();
 
             var app = builder.Build();
 
@@ -39,6 +37,7 @@ namespace Provider.Host
                 app.UseSwaggerUI();
             }
 
+            app.UseEasyCoreConsul();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();

@@ -28,7 +28,7 @@ public class RemoteApiRegistrationTests
 
         var shouldRegister = RemoteApiRegistrationHelper.ShouldRegisterRemoteProxy(
             services,
-            typeof(ILocalRemoteService),
+            typeof(IProxyOnlyRemoteService),
             requireRemoteConfig: true,
             hasRemoteConfig: true);
 
@@ -53,18 +53,18 @@ public class RemoteApiRegistrationTests
     }
 
     [Fact]
-    public void EasyCoreRemoteApiClients_Registers_Interface_Only_Proxy_When_Configured()
+    public void EasyCoreRemoteApiClients_Registers_Interface_Only_Proxy_When_No_Local_Implementation()
     {
         var configuration = new TestConfiguration(new Dictionary<string, string?>
         {
-            ["RemoteServices:TestService"] = "http://localhost:5094"
+            ["RemoteServices:ProxyOnly"] = "http://localhost:5094"
         });
 
         var services = new ServiceCollection();
         services.AddSingleton<IConfiguration>(configuration);
         services.EasyCoreRemoteApiClients();
 
-        var descriptor = services.Single(d => d.ServiceType == typeof(IConfiguredRemoteService));
+        var descriptor = services.Single(d => d.ServiceType == typeof(IProxyOnlyRemoteService));
         Assert.NotNull(descriptor.ImplementationFactory);
         Assert.Null(descriptor.ImplementationType);
     }
@@ -74,16 +74,37 @@ public class RemoteApiRegistrationTests
     {
         var services = new ServiceCollection();
         services.AddSingleton<IConfiguration>(new TestConfiguration(new Dictionary<string, string?>()));
-        services.AddTransient<IConfiguredRemoteService, ConfiguredRemoteServiceHost>();
+        services.AddTransient<IHostedRemoteService, HostedRemoteService>();
 
         services.EasyCoreRemoteApiClients();
 
-        var descriptor = services.Single(d => d.ServiceType == typeof(IConfiguredRemoteService));
-        Assert.Equal(typeof(ConfiguredRemoteServiceHost), descriptor.ImplementationType);
+        var descriptor = services.Single(d => d.ServiceType == typeof(IHostedRemoteService));
+        Assert.Equal(typeof(HostedRemoteService), descriptor.ImplementationType);
     }
 
-    [ApiHost("TestService")]
-    public interface IConfiguredRemoteService : IRemoteAppService
+    [Fact]
+    public void HasLocalImplementation_Detects_Concrete_Class_In_Loaded_Assemblies()
+    {
+        var services = new ServiceCollection();
+
+        Assert.True(RemoteApiRegistrationHelper.HasLocalImplementation(services, typeof(IHostedRemoteService)));
+        Assert.False(RemoteApiRegistrationHelper.HasLocalImplementation(services, typeof(IProxyOnlyRemoteService)));
+    }
+
+    /// <summary>
+    /// Remote-only contract with no concrete class in this assembly (consumer-side scenario).
+    /// </summary>
+    [ApiHost("ProxyOnly")]
+    public interface IProxyOnlyRemoteService : IRemoteAppService
+    {
+        Task Ping();
+    }
+
+    /// <summary>
+    /// Host-side contract that has a local implementation in this assembly.
+    /// </summary>
+    [ApiHost("HostedService")]
+    public interface IHostedRemoteService : IRemoteAppService
     {
         Task Ping();
     }
@@ -98,7 +119,7 @@ public class RemoteApiRegistrationTests
         public Task Ping() => Task.CompletedTask;
     }
 
-    private sealed class ConfiguredRemoteServiceHost : IConfiguredRemoteService
+    private sealed class HostedRemoteService : IHostedRemoteService
     {
         public Task Ping() => Task.CompletedTask;
     }
