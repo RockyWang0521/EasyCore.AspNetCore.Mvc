@@ -1,10 +1,9 @@
 ﻿namespace EasyCore.AspNetCore.Mvc.RemoteServices
 {
     /// <summary>
-    /// Interface for remote app services.
+    /// Marker interface for contracts that can be called through a remote HTTP proxy.
     /// </summary>
     public interface IRemoteAppService
     {
-
     }
 }

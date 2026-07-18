@@ -1,74 +1,66 @@
 ﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace EasyCore.AspNetCore.Mvc.RemoteServices
 {
     /// <summary>
-    /// Extension methods for <see cref="IServiceCollection"/> to register remote API clients.
+    /// Extension methods for registering remote API clients against configured static hosts.
     /// </summary>
-
     public static class RemoteApiClientExtensions
     {
         /// <summary>
-        /// Register remote API clients.
+        /// Scans loaded assemblies for <see cref="IRemoteAppService"/> interfaces marked with
+        /// <see cref="ApiHostAttribute"/> and registers interface-only HTTP proxies.
+        /// Local host implementations are kept when remote configuration is missing.
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <param name="services">The service collection to configure.</param>
+        /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when a remote interface requires a missing <c>RemoteServices:{ConfigKey}</c> value.
+        /// </exception>
         public static IServiceCollection EasyCoreRemoteApiClients(this IServiceCollection services)
         {
-            services.AddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
+            services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
+            services.AddHttpContextAccessor();
 
-            RegisterClients(services, (iface, attr, svc) =>
-            {
-                svc.AddHttpClient(iface.FullName!, (sp, c) =>
-                {
-                    var config = sp.GetRequiredService<IConfiguration>();
+            var configuration = RemoteApiRegistrationHelper.TryGetConfiguration(services);
 
-                    var baseUrl = !string.IsNullOrWhiteSpace(attr.ConfigKey)
-                        ? config[$"RemoteServices:{attr.ConfigKey}"]
-                        : throw new InvalidOperationException($"Interface {iface.Name} is missing ConfigKey.");
-
-                    if (string.IsNullOrWhiteSpace(baseUrl))
-                        throw new InvalidOperationException($"Configure RemoteServices: {attr.ConfigKey} is null or empty.");
-
-                    c.BaseAddress = new Uri(baseUrl);
-                });
-
-                svc.AddTransient(iface, sp =>
-                {
-                    var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(iface.FullName!);
-
-                    var headerProvider = sp.GetRequiredService<IRemoteRequestHeaderProvider>();
-
-                    return RemoteApiHostClientFactory.Create(httpClient, null, headerProvider, iface);
-                });
-            });
-
-            return services;
-        }
-
-        /// <summary>
-        /// Register remote API clients.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="registerHttpClient"></param>
-        private static void RegisterClients(IServiceCollection services, Action<Type, ApiHostAttribute, IServiceCollection> registerHttpClient)
-        {
-            var allTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => !a.IsDynamic)
-                .SelectMany(a => a.GetTypes());
-
-            var interfaces = allTypes
-                .Where(t => t.IsInterface && typeof(IRemoteAppService).IsAssignableFrom(t) && t != typeof(IRemoteAppService));
-
-            foreach (var iface in interfaces)
+            foreach (var iface in RemoteApiRegistrationHelper.FindRemoteInterfaces())
             {
                 var attr = iface.GetCustomAttribute<ApiHostAttribute>();
+                if (attr == null)
+                    continue;
 
-                if (attr == null) continue;
+                var hasConfig = RemoteApiRegistrationHelper.HasApiHostConfig(configuration, attr.ConfigKey);
+                if (!RemoteApiRegistrationHelper.ShouldRegisterRemoteProxy(services, iface, requireRemoteConfig: true, hasConfig))
+                    continue;
 
-                registerHttpClient(iface, attr, services);
+                if (!hasConfig)
+                    throw new InvalidOperationException(
+                        $"Configure RemoteServices:{attr.ConfigKey} for remote interface {iface.Name}.");
+
+                var clientName = iface.FullName!;
+                var configKey = attr.ConfigKey;
+
+                services.AddHttpClient(clientName, (sp, client) =>
+                {
+                    var config = sp.GetRequiredService<IConfiguration>();
+                    var baseUrl = config[$"RemoteServices:{configKey}"];
+                    if (string.IsNullOrWhiteSpace(baseUrl))
+                        throw new InvalidOperationException($"Configure RemoteServices:{configKey} is null or empty.");
+
+                    client.BaseAddress = new Uri(baseUrl);
+                });
+
+                RemoteApiRegistrationHelper.ReplaceWithInterfaceProxy(services, iface, sp =>
+                {
+                    var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(clientName);
+                    var headerProvider = sp.GetRequiredService<IRemoteRequestHeaderProvider>();
+                    return RemoteApiHostClientFactory.Create(httpClient, null, headerProvider, iface);
+                });
             }
+
+            return services;
         }
     }
 }

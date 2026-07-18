@@ -2,17 +2,33 @@
 
 namespace EasyCore.AspNetCore.Mvc.AppService
 {
+    /// <summary>
+    /// Generates sequential GUIDs optimized for common database engines.
+    /// </summary>
     internal class GuidFactory : IGuidFactory
     {
+        /// <summary>
+        /// Cryptographically secure random number generator used for GUID entropy.
+        /// </summary>
         private static readonly RandomNumberGenerator RandomNumberGenerator = RandomNumberGenerator.Create();
 
+        /// <inheritdoc />
         public Guid NewGuid => Create();
 
+        /// <summary>
+        /// Creates a sequential GUID using the binary layout (Oracle-friendly).
+        /// </summary>
+        /// <returns>A new sequential <see cref="Guid"/>.</returns>
         public Guid Create()
         {
             return Create(SequentialGuidType.SequentialAsBinary);
         }
 
+        /// <summary>
+        /// Creates a sequential GUID using the specified layout strategy.
+        /// </summary>
+        /// <param name="guidType">The sequential GUID layout to use.</param>
+        /// <returns>A new sequential <see cref="Guid"/>.</returns>
         public Guid Create(SequentialGuidType guidType)
         {
             var randomBytes = new byte[10];
@@ -61,6 +77,9 @@ namespace EasyCore.AspNetCore.Mvc.AppService
             return new Guid(guidBytes);
         }
 
+        /// <summary>
+        /// Specifies how the sequential portion of a GUID is arranged for different databases.
+        /// </summary>
         public enum SequentialGuidType
         {
             /// <summary>

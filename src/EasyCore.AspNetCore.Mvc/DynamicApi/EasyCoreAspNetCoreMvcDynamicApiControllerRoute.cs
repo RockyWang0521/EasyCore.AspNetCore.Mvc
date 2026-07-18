@@ -1,38 +1,52 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EasyCore.AspNetCore.Mvc.AppService;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
-public class EasyCoreAspNetCoreMvcDynamicApiControllerRoute : IApplicationModelConvention
+namespace EasyCore.AspNetCore.Mvc.DynamicApi
 {
-    public void Apply(ApplicationModel application)
+    /// <summary>
+    /// Rewrites action routes and HTTP verbs for dynamic APIs based on method-name prefixes
+    /// (<c>Get*</c>, <c>Post*</c>, <c>Put*</c>, <c>Delete*</c>).
+    /// Only applies to controllers that inherit <see cref="BaseAppService"/>.
+    /// </summary>
+    public class EasyCoreAspNetCoreMvcDynamicApiControllerRoute : IApplicationModelConvention
     {
-        foreach (var controller in application.Controllers)
+        /// <summary>
+        /// Applies the route and HTTP-verb convention to the application model.
+        /// </summary>
+        /// <param name="application">The MVC application model.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when an action method name does not start with a supported HTTP verb prefix.
+        /// </exception>
+        public void Apply(ApplicationModel application)
         {
-            foreach (var action in controller.Actions)
+            foreach (var controller in application.Controllers)
             {
-                var methodName = action.ActionMethod.Name;
+                if (!typeof(BaseAppService).IsAssignableFrom(controller.ControllerType))
+                    continue;
 
-                string httpVerb = methodName switch
+                foreach (var action in controller.Actions)
                 {
-                    var n when n.StartsWith("Get") => "GET",
+                    var methodName = action.ActionMethod.Name;
 
-                    var n when n.StartsWith("Post") => "POST",
+                    string httpVerb = methodName switch
+                    {
+                        var n when n.StartsWith("Get", StringComparison.OrdinalIgnoreCase) => "GET",
+                        var n when n.StartsWith("Post", StringComparison.OrdinalIgnoreCase) => "POST",
+                        var n when n.StartsWith("Put", StringComparison.OrdinalIgnoreCase) => "PUT",
+                        var n when n.StartsWith("Delete", StringComparison.OrdinalIgnoreCase) => "DELETE",
+                        _ => throw new InvalidOperationException(
+                            $"Cannot infer HTTP verb from action '{controller.ControllerName}.{methodName}'. Use Get*/Post*/Put*/Delete* naming.")
+                    };
 
-                    var n when n.StartsWith("Put") => "PUT",
-
-                    var n when n.StartsWith("Delete") => "DELETE",
-
-                    _ => "GET"
-                };
-
-                action.Selectors.Clear();
-
-                action.Selectors.Add(new SelectorModel
-                {
-                    AttributeRouteModel = new AttributeRouteModel(new RouteAttribute(methodName)),
-
-                    ActionConstraints = { new HttpMethodActionConstraint(new[] { httpVerb }) }
-                });
+                    action.Selectors.Clear();
+                    action.Selectors.Add(new SelectorModel
+                    {
+                        AttributeRouteModel = new AttributeRouteModel(new RouteAttribute(methodName)),
+                        ActionConstraints = { new HttpMethodActionConstraint(new[] { httpVerb }) }
+                    });
+                }
             }
         }
     }

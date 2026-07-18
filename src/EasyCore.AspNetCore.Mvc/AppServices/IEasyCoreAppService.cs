@@ -1,6 +1,9 @@
 ﻿namespace EasyCore.AspNetCore.Mvc.AppService
 {
-    public interface IEasyCoreAppService 
+    /// <summary>
+    /// Marker interface for EasyCore application services.
+    /// </summary>
+    public interface IEasyCoreAppService
     {
     }
 }

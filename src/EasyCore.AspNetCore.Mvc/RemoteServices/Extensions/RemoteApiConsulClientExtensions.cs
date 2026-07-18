@@ -1,78 +1,65 @@
-﻿using Consul;
-using System.Reflection;
+﻿using System.Reflection;
+using Consul;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace EasyCore.AspNetCore.Mvc.RemoteServices
 {
     /// <summary>
-    /// Extension methods for registering remote API clients with Consul.
+    /// Extension methods for registering remote API clients that resolve hosts via Consul.
     /// </summary>
     public static class RemoteApiConsulClientExtensions
     {
         /// <summary>
-        /// Register remote API clients with Consul.
+        /// Registers Consul discovery and interface-only proxies for contracts marked with
+        /// <see cref="ConsulServiceAttribute"/>. Skips interfaces that already have a local implementation.
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
+        /// <param name="services">The service collection to configure.</param>
+        /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
+        /// <exception cref="ArgumentException">Thrown when <c>Consul:ConsulAddress</c> is not configured.</exception>
         public static IServiceCollection EasyCoreRemoteApiConsulClients(this IServiceCollection services)
         {
-            using var provider = services.BuildServiceProvider();
+            services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
+            services.AddHttpContextAccessor();
 
-            var Configuration = provider.GetRequiredService<IConfiguration>();
+            var configuration = RemoteApiRegistrationHelper.TryGetConfiguration(services);
+            var consulAddress = configuration?["Consul:ConsulAddress"];
+            if (string.IsNullOrWhiteSpace(consulAddress))
+                throw new ArgumentException("Consul address is not configured (Consul:ConsulAddress).");
 
-            var consulAddress = Configuration["Consul:ConsulAddress"];
-
-            if (string.IsNullOrEmpty(consulAddress)) throw new ArgumentException("Consul address is not configured.");
-
-            services.AddSingleton<IConsulClient>(sp => new ConsulClient(config =>
+            services.TryAddSingleton<IConsulClient>(_ => new ConsulClient(config =>
             {
                 config.Address = new Uri(consulAddress);
             }));
 
-            services.AddSingleton<ConsulServiceDiscovery>();
+            services.TryAddSingleton<ConsulServiceDiscovery>();
 
-            services.AddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
-
-            RegisterClients(services, async (iface, attr, sp) =>
+            foreach (var iface in RemoteApiRegistrationHelper.FindRemoteInterfaces())
             {
-                var discovery = sp.GetRequiredService<ConsulServiceDiscovery>();
+                var attr = iface.GetCustomAttribute<ConsulServiceAttribute>();
+                if (attr == null)
+                    continue;
 
-                var headerProvider = sp.GetRequiredService<IRemoteRequestHeaderProvider>();
+                // Host apps that already registered a concrete implementation keep the local service.
+                if (!RemoteApiRegistrationHelper.ShouldRegisterRemoteProxy(
+                        services, iface, requireRemoteConfig: false, hasRemoteConfig: false))
+                    continue;
 
-                var proxy = await RemoteApiConsulClientFactory.CreateAsync(iface, discovery, headerProvider);
+                var clientName = iface.FullName!;
+                var serviceName = attr.ServiceName;
 
-                return proxy;
-            });
+                services.AddHttpClient(clientName)
+                    .AddHttpMessageHandler(sp =>
+                        new ConsulResolvingHandler(sp.GetRequiredService<ConsulServiceDiscovery>(), serviceName));
+
+                RemoteApiRegistrationHelper.ReplaceWithInterfaceProxy(services, iface, sp =>
+                {
+                    var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(clientName);
+                    var headerProvider = sp.GetRequiredService<IRemoteRequestHeaderProvider>();
+                    return RemoteApiConsulClientFactory.Create(httpClient, headerProvider, iface);
+                });
+            }
 
             return services;
         }
-
-        /// <summary>
-        /// Register remote API clients with Consul.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="createProxyAsync"></param>
-        private static void RegisterClients(IServiceCollection services, Func<Type, ConsulServiceAttribute, IServiceProvider, Task<object>> createProxyAsync)
-        {
-            var allTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => !a.IsDynamic)
-                .SelectMany(a => a.GetTypes());
-
-            var interfaces = allTypes
-                .Where(t => t.IsInterface && typeof(IRemoteAppService).IsAssignableFrom(t) && t != typeof(IRemoteAppService));
-
-            foreach (var iface in interfaces)
-            {
-                var attr = iface.GetCustomAttribute<ConsulServiceAttribute>();
-
-                if (attr == null) continue;
-
-                services.AddTransient(iface, sp =>
-                {
-                    return createProxyAsync(iface, attr, sp).GetAwaiter().GetResult();
-                });
-            }
-        }
     }
-
 }

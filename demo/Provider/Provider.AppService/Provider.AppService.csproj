@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Provider.AppService.Contracts\Provider.AppService.Contracts.csproj" />
+    <ProjectReference Include="..\Provider.EFCore\Provider.EFCore.csproj" />
+  </ItemGroup>
+
+</Project>
