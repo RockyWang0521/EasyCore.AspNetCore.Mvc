@@ -16,7 +16,7 @@
 ## 🌍 Language
 
 - **中文（当前文档）**
-- English: [README.en.md](README.en.md)
+- English: [README.en.md](https://github.com/RockyWang0521/EasyCore.AspNetCore.Mvc/blob/master/README.en.md)
 
 ---
 
@@ -93,11 +93,11 @@ EasyCore.AspNetCore.Mvc/
 
 ### 2.1 组件关系图
 
-![architecture-cn](docs/svg/architecture-cn.svg)
+![architecture-cn](https://raw.githubusercontent.com/RockyWang0521/EasyCore.AspNetCore.Mvc/master/docs/svg/architecture-cn.svg)
 
 ### 2.2 远端调用生命周期
 
-![sequence-cn](docs/svg/sequence-cn.svg)
+![sequence-cn](https://raw.githubusercontent.com/RockyWang0521/EasyCore.AspNetCore.Mvc/master/docs/svg/sequence-cn.svg)
 
 ### 2.3 数据流（文字版）
 
@@ -225,7 +225,7 @@ app.Run();
 
 ### 7️⃣.3️⃣ 效果预览
 
-![dynamic-api-preview](docs/svg/dynamic-api-preview.svg)
+![dynamic-api-preview](https://raw.githubusercontent.com/RockyWang0521/EasyCore.AspNetCore.Mvc/master/docs/svg/dynamic-api-preview.svg)
 
 打开 Swagger 即可看到 `GET/POST/PUT/DELETE` 已按方法名自动生成。
 
@@ -491,7 +491,7 @@ public async Task GetContextInfo()
 
 ## 16. Demo 项目
 
-![demo-topology-cn](docs/svg/demo-topology-cn.svg)
+![demo-topology-cn](https://raw.githubusercontent.com/RockyWang0521/EasyCore.AspNetCore.Mvc/master/docs/svg/demo-topology-cn.svg)
 
 | 项目 | 端口 | 角色 | 命令 |
 |---|---|---|---|
@@ -586,6 +586,6 @@ A: 会。当前请求存在 Authorization / 租户头时，远端代理会尽力
 3. 执行 `dotnet test` 与解决方案构建  
 4. 提交 Pull Request / Merge Request  
 
-仓库： [gitee.com/wzhy-0521/easy-core.-asp-net-core.-mvc](https://gitee.com/wzhy-0521/easy-core.-asp-net-core.-mvc)  
+仓库： [github.com/RockyWang0521/EasyCore.AspNetCore.Mvc](https://github.com/RockyWang0521/EasyCore.AspNetCore.Mvc)  
 
 欢迎 Issue / PR 🚀

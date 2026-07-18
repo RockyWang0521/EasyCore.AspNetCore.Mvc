@@ -15,7 +15,7 @@
 
 ## 🌍 Language
 
-- Chinese: [README.md](README.md)
+- Chinese: [README.md](https://github.com/RockyWang0521/EasyCore.AspNetCore.Mvc/blob/master/README.md)
 - **English (this document)**
 
 ---
@@ -93,11 +93,11 @@ EasyCore.AspNetCore.Mvc/
 
 ### 2.1 Component Diagram
 
-![architecture-en](docs/svg/architecture-en.svg)
+![architecture-en](https://raw.githubusercontent.com/RockyWang0521/EasyCore.AspNetCore.Mvc/master/docs/svg/architecture-en.svg)
 
 ### 2.2 Remote Call Lifecycle
 
-![sequence-en](docs/svg/sequence-en.svg)
+![sequence-en](https://raw.githubusercontent.com/RockyWang0521/EasyCore.AspNetCore.Mvc/master/docs/svg/sequence-en.svg)
 
 ### 2.3 Data Flow
 
@@ -225,7 +225,7 @@ app.Run();
 
 ### 7️⃣.3️⃣ Preview
 
-![dynamic-api-preview](docs/svg/dynamic-api-preview.svg)
+![dynamic-api-preview](https://raw.githubusercontent.com/RockyWang0521/EasyCore.AspNetCore.Mvc/master/docs/svg/dynamic-api-preview.svg)
 
 Open Swagger to see `GET/POST/PUT/DELETE` generated from method names.
 
@@ -488,7 +488,7 @@ For custom headers (for example `X-Api-Key`), implement `IRemoteRequestHeaderPro
 
 ## 16. Demo Projects
 
-![demo-topology-en](docs/svg/demo-topology-en.svg)
+![demo-topology-en](https://raw.githubusercontent.com/RockyWang0521/EasyCore.AspNetCore.Mvc/master/docs/svg/demo-topology-en.svg)
 
 | Project | Port | Role | Command |
 |---|---|---|---|
@@ -581,6 +581,6 @@ A: Yes, when Authorization / tenant headers exist on the current request. See [�
 3. Run `dotnet test` and build the solution  
 4. Open a Pull Request / Merge Request  
 
-Repository: [gitee.com/wzhy-0521/easy-core.-asp-net-core.-mvc](https://gitee.com/wzhy-0521/easy-core.-asp-net-core.-mvc)  
+Repository: [github.com/RockyWang0521/EasyCore.AspNetCore.Mvc](https://github.com/RockyWang0521/EasyCore.AspNetCore.Mvc)  
 
 Issues and PRs are welcome 🚀
