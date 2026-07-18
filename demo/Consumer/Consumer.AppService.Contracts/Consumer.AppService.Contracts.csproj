@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EasyCore.Dependency" Version="8.0.1" />
     <PackageReference Include="EasyCore.Consul" Version="8.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Provider\Provider.AppService.Contracts\Provider.AppService.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\..\EasyCore.Dependency\src\EasyCore.Dependency\EasyCore.Dependency.csproj" />
   </ItemGroup>
 
 </Project>

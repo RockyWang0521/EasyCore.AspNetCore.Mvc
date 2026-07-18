@@ -4,7 +4,7 @@ using EasyCore.Dependency;
 namespace Provider.AppService.Contracts
 {
     /// <summary>
-    /// Sample contract for Nacos discovery. Enable with EasyCoreRemoteApiNacosClients() on the consumer.
+    /// Sample contract for Nacos discovery. Enable with AddEasyCoreRemoteApiNacosClients() on the consumer.
     /// </summary>
     [NacosService("Provider")]
     public interface IProviderNacosTestAppService : IRemoteAppService, ITransientDependency

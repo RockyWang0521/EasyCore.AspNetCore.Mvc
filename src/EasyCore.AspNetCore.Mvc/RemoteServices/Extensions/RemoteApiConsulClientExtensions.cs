@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Consul;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -16,7 +16,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// </summary>
         /// <param name="services">The service collection to configure.</param>
         /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
-        public static IServiceCollection EasyCoreRemoteApiConsulClients(this IServiceCollection services)
+        public static IServiceCollection AddEasyCoreRemoteApiConsulClients(this IServiceCollection services)
         {
             services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
             services.AddHttpContextAccessor();

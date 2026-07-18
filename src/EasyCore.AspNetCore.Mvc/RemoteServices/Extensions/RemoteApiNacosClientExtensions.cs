@@ -14,7 +14,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// <see cref="NacosServiceAttribute"/>. Skips interfaces that already have a local implementation.
         /// Reads <c>Nacos:*</c> from configuration when <paramref name="configure"/> is omitted.
         /// </summary>
-        public static IServiceCollection EasyCoreRemoteApiNacosClients(
+        public static IServiceCollection AddEasyCoreRemoteApiNacosClients(
             this IServiceCollection services,
             Action<NacosOption>? configure = null)
         {

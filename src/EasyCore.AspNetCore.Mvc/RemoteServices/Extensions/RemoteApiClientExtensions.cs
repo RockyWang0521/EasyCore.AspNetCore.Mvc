@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace EasyCore.AspNetCore.Mvc.RemoteServices
@@ -16,7 +16,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// </summary>
         /// <param name="services">The service collection to configure.</param>
         /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
-        public static IServiceCollection EasyCoreRemoteApiClients(this IServiceCollection services)
+        public static IServiceCollection AddEasyCoreRemoteApiClients(this IServiceCollection services)
         {
             services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
             services.AddHttpContextAccessor();

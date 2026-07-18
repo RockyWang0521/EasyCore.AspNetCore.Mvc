@@ -1,4 +1,4 @@
-﻿namespace EasyCore.AspNetCore.Mvc.DynamicApi
+namespace EasyCore.AspNetCore.Mvc.DynamicApi
 {
     /// <summary>
     /// Extension methods for enabling EasyCore dynamic API conventions.
@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="service">The service collection to configure.</param>
         /// <returns>The same <paramref name="service"/> instance for chaining.</returns>
-        public static IServiceCollection EasyCoreDynamicApi(this IServiceCollection service)
+        public static IServiceCollection AddEasyCoreDynamicApi(this IServiceCollection service)
         {
             service.AddControllers(options =>
             {

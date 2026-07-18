@@ -1,4 +1,4 @@
-﻿using Mapster;
+using Mapster;
 using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -13,7 +13,7 @@ namespace EasyCore.AspNetCore.Mvc.AppService
         /// Registers Mapster, current-user/tenant/token accessors, and GUID factory services.
         /// </summary>
         /// <param name="service">The service collection to configure.</param>
-        public static void EasyCoreAppServices(this IServiceCollection service)
+        public static void AddEasyCoreAppServices(this IServiceCollection service)
         {
             service.AddHttpContextAccessor();
 

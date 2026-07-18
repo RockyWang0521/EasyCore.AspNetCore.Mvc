@@ -7,8 +7,8 @@
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-MVC-blueviolet)
 ![Remote](https://img.shields.io/badge/Remote-ApiHost%20%7C%20Consul%20%7C%20K8s%20%7C%20Nacos%20%7C%20Dapr-orange)
 ![Mapster](https://img.shields.io/badge/Mapper-Mapster-green)
-![License](https://img.shields.io/badge/License-MulanPSL--2.0-yellow)
-![Version](https://img.shields.io/badge/Version-8.1.0-blue)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Version](https://img.shields.io/badge/Version-8.3.0-blue)
 ![NuGet](https://img.shields.io/nuget/v/EasyCore.AspNetCore.Mvc?label=NuGet)
 
 ---
@@ -58,7 +58,7 @@ EasyCore.AspNetCore.Mvc reduces controller boilerplate and makes remote calls fe
 
 | Pain point | EasyCore.AspNetCore.Mvc approach |
 |---|---|
-| Hand-written controllers | `EasyCoreAppService` + `EasyCoreDynamicApi()` |
+| Hand-written controllers | `EasyCoreAppService` + `AddEasyCoreDynamicApi()` |
 | Scattered `HttpClient` usage | Interface + attribute → `DispatchProxy` |
 | Provider replaced by remote proxy | Skip registration when a local implementation exists |
 | Hard to forward Token / tenant | `IRemoteRequestHeaderProvider` |
@@ -105,7 +105,7 @@ EasyCore.AspNetCore.Mvc/
 [EasyCoreAppService]
         │
         ▼
- EasyCoreDynamicApi ──► MVC Controller ──► Swagger
+ AddEasyCoreDynamicApi ──► MVC Controller ──► Swagger
         │
         │   (Consumer side)
         ▼
@@ -135,7 +135,7 @@ EasyCore.AspNetCore.Mvc/
 | Capability | ApiHost | Consul | Kubernetes | Nacos | Dapr |
 |---|---|---|---|---|---|
 | Attribute | `[ApiHost("Name")]` | `[ConsulService("Name")]` | `[K8sDns("svc", port)]` | `[NacosService("Name")]` | `[DaprApp("app-id")]` |
-| Registration | `EasyCoreRemoteApiClients()` | `EasyCoreRemoteApiConsulClients()` | `EasyCoreRemoteApiK8sClients(...)` | `EasyCoreRemoteApiNacosClients()` | `EasyCoreRemoteApiDaprClients()` |
+| Registration | `AddEasyCoreRemoteApiClients()` | `AddEasyCoreRemoteApiConsulClients()` | `AddEasyCoreRemoteApiK8sClients(...)` | `AddEasyCoreRemoteApiNacosClients()` | `AddEasyCoreRemoteApiDaprClients()` |
 | Address source | `RemoteServices:Name` | Consul Health API | DNS: `{svc}.{ns}.svc.{domain}` | Naming OpenAPI instance list | Local sidecar HTTP invoke |
 | Typical use | Local / fixed gateway | Multi-instance discovery | In-cluster Service | Common CN registry | Sidecar mesh / polyglot |
 | Extra dependency | None | Consul Agent | Cluster DNS | Nacos Server | Dapr sidecar |
@@ -209,9 +209,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.EasyCoreDynamicApi();
-builder.Services.EasyCoreAppServices();
-builder.Services.EasyCoreDependency();
+builder.Services.AddEasyCoreDynamicApi();
+builder.Services.AddEasyCoreAppServices();
+builder.Services.AddEasyCoreDependency();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -276,7 +276,7 @@ public interface IProviderTestAppService : IRemoteAppService, ITransientDependen
 ### 9️⃣.3️⃣ Consumer registration
 
 ```csharp
-builder.Services.EasyCoreRemoteApiClients();
+builder.Services.AddEasyCoreRemoteApiClients();
 
 public class ConsumerTestAppService(
     IProviderTestAppService provider) : EasyCoreAppService
@@ -332,7 +332,7 @@ Sample `appsettings.json`:
 ### 🔟.3️⃣ Enable Consul clients on the Consumer
 
 ```csharp
-builder.Services.EasyCoreRemoteApiConsulClients();
+builder.Services.AddEasyCoreRemoteApiConsulClients();
 builder.AddEasyCoreConsul()
     .AddEasyCoreConsulCache()
     .AddEasyCoreConsulLocking()
@@ -346,7 +346,7 @@ Resolution path: `Health.Service` → pick a healthy instance → `ConsulResolvi
 ## 11. Kubernetes DNS
 
 ```csharp
-builder.Services.EasyCoreRemoteApiK8sClients(options =>
+builder.Services.AddEasyCoreRemoteApiK8sClients(options =>
 {
     options.K8sNamespace = "default";
     // Final host: {ServiceName}.default.svc.cluster.local
@@ -399,7 +399,7 @@ Optional: `UserName` / `Password` for OpenAPI auth.
 ### 12.3 Consumer registration
 
 ```csharp
-builder.Services.EasyCoreRemoteApiNacosClients();
+builder.Services.AddEasyCoreRemoteApiNacosClients();
 ```
 
 Resolution path: `GET /nacos/v1/ns/instance/list?healthyOnly=true` → random healthy instance → `http://ip:port/`.
@@ -437,7 +437,7 @@ When empty: read `DAPR_HTTP_PORT`, otherwise default to `http://127.0.0.1:3500/`
 ### 13.3 Consumer registration
 
 ```csharp
-builder.Services.EasyCoreRemoteApiDaprClients();
+builder.Services.AddEasyCoreRemoteApiDaprClients();
 ```
 
 Path rewrite: `api/Foo/GetDto` → `/v1.0/invoke/provider/method/api/Foo/GetDto`.
@@ -516,10 +516,10 @@ dotnet run --project demo/Consumer/Consumer.Host
 
 ## 17. Migrating from older versions
 
-| Older | Current (8.0) |
+| Older | Current (8.3.0) |
 |---|---|
 | `EasyCore.Dependencie` / `ITransientDependencie` | `EasyCore.Dependency` / `ITransientDependency` |
-| `EasyCoreDependencie()` | `EasyCoreDependency()` |
+| `EasyCoreDependencie()` / `EasyCoreDependency()` | `AddEasyCoreDependency()` |
 | `builder.EasyCoreConsul(args)...` | `builder.AddEasyCoreConsul()...` |
 | AutoMapper | **Mapster** |
 | Remote proxy activated concrete types | **Interface-only** DispatchProxy |
@@ -546,7 +546,7 @@ dotnet run --project demo/Consumer/Consumer.Host
 ## 19. FAQ
 
 **Q: AppService missing from Swagger?**  
-A: Inherit `EasyCoreAppService` and call `EasyCoreDynamicApi()` plus `EasyCoreDependency()` (or equivalent DI registration).
+A: Inherit `EasyCoreAppService` and call `AddEasyCoreDynamicApi()` plus `AddEasyCoreDependency()` (or equivalent DI registration).
 
 **Q: Consumer resolves a local type / missing dependencies?**  
 A: Since 8.0, proxies register only when **no local implementation** exists. Do not reference the Provider implementation project from Consumer.
@@ -570,7 +570,7 @@ A: Yes, when Authorization / tenant headers exist on the current request. See [�
 
 ## 20. License
 
-[MulanPSL-2.0](https://licenses.nuget.org/MulanPSL-2.0) — see package metadata.
+MIT — see [LICENSE](LICENSE) and the NuGet package declaration.
 
 ---
 

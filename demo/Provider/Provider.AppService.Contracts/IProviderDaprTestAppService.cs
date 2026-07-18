@@ -4,7 +4,7 @@ using EasyCore.Dependency;
 namespace Provider.AppService.Contracts
 {
     /// <summary>
-    /// Sample contract for Dapr sidecar invoke. Enable with EasyCoreRemoteApiDaprClients() on the consumer.
+    /// Sample contract for Dapr sidecar invoke. Enable with AddEasyCoreRemoteApiDaprClients() on the consumer.
     /// </summary>
     [DaprApp("provider")]
     public interface IProviderDaprTestAppService : IRemoteAppService, ITransientDependency

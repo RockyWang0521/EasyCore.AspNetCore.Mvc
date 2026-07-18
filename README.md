@@ -7,8 +7,8 @@
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-MVC-blueviolet)
 ![Remote](https://img.shields.io/badge/Remote-ApiHost%20%7C%20Consul%20%7C%20K8s%20%7C%20Nacos%20%7C%20Dapr-orange)
 ![Mapster](https://img.shields.io/badge/Mapper-Mapster-green)
-![License](https://img.shields.io/badge/License-MulanPSL--2.0-yellow)
-![Version](https://img.shields.io/badge/Version-8.1.0-blue)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Version](https://img.shields.io/badge/Version-8.3.0-blue)
 ![NuGet](https://img.shields.io/nuget/v/EasyCore.AspNetCore.Mvc?label=NuGet)
 
 ---
@@ -58,7 +58,7 @@ EasyCore.AspNetCore.Mvc 解决「少写控制器样板、服务间像本地一�
 
 | 痛点 | EasyCore.AspNetCore.Mvc 做法 |
 |---|---|
-| 每个方法手写 Controller | `EasyCoreAppService` + `EasyCoreDynamicApi()` 自动暴露 |
+| 每个方法手写 Controller | `EasyCoreAppService` + `AddEasyCoreDynamicApi()` 自动暴露 |
 | 远端调用散落 `HttpClient` | 接口 + 特性 → `DispatchProxy` 动态代理 |
 | Provider 误被远端代理替换 | 检测到本地实现则跳过远程注册 |
 | Token / 租户头难透传 | `IRemoteRequestHeaderProvider` 自动转发 |
@@ -105,7 +105,7 @@ EasyCore.AspNetCore.Mvc/
 [EasyCoreAppService]
         │
         ▼
- EasyCoreDynamicApi ──► MVC Controller ──► Swagger
+ AddEasyCoreDynamicApi ──► MVC Controller ──► Swagger
         │
         │   (Consumer 侧)
         ▼
@@ -135,7 +135,7 @@ EasyCore.AspNetCore.Mvc/
 | 能力 | ApiHost | Consul | Kubernetes | Nacos | Dapr |
 |---|---|---|---|---|---|
 | 特性 | `[ApiHost("Name")]` | `[ConsulService("Name")]` | `[K8sDns("svc", port)]` | `[NacosService("Name")]` | `[DaprApp("app-id")]` |
-| 注册扩展 | `EasyCoreRemoteApiClients()` | `EasyCoreRemoteApiConsulClients()` | `EasyCoreRemoteApiK8sClients(...)` | `EasyCoreRemoteApiNacosClients()` | `EasyCoreRemoteApiDaprClients()` |
+| 注册扩展 | `AddEasyCoreRemoteApiClients()` | `AddEasyCoreRemoteApiConsulClients()` | `AddEasyCoreRemoteApiK8sClients(...)` | `AddEasyCoreRemoteApiNacosClients()` | `AddEasyCoreRemoteApiDaprClients()` |
 | 地址来源 | `RemoteServices:Name` | Consul Health API | DNS：`{svc}.{ns}.svc.{domain}` | Naming OpenAPI 实例列表 | 本机 sidecar HTTP invoke |
 | 典型场景 | 本地联调 / 固定网关 | 多实例服务发现 | 集群内 Service | 阿里云 / 国内部署常见 | 边车网格 / 多语言互调 |
 | 额外依赖 | 无 | Consul Agent | 集群 DNS | Nacos Server | Dapr sidecar |
@@ -209,9 +209,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.EasyCoreDynamicApi();
-builder.Services.EasyCoreAppServices();
-builder.Services.EasyCoreDependency();
+builder.Services.AddEasyCoreDynamicApi();
+builder.Services.AddEasyCoreAppServices();
+builder.Services.AddEasyCoreDependency();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -276,7 +276,7 @@ public interface IProviderTestAppService : IRemoteAppService, ITransientDependen
 ### 9️⃣.3️⃣ 消费端注册与调用
 
 ```csharp
-builder.Services.EasyCoreRemoteApiClients();
+builder.Services.AddEasyCoreRemoteApiClients();
 
 // 任意服务中直接注入接口
 public class ConsumerTestAppService(
@@ -333,7 +333,7 @@ app.UseEasyCoreConsul(); // 映射 /healthCheck；注册由 HostedService 完成
 ### 🔟.3️⃣ Consumer 启用 Consul 客户端
 
 ```csharp
-builder.Services.EasyCoreRemoteApiConsulClients();
+builder.Services.AddEasyCoreRemoteApiConsulClients();
 builder.AddEasyCoreConsul()
     .AddEasyCoreConsulCache()
     .AddEasyCoreConsulLocking()
@@ -347,7 +347,7 @@ builder.AddEasyCoreConsul()
 ## 11. Kubernetes DNS
 
 ```csharp
-builder.Services.EasyCoreRemoteApiK8sClients(options =>
+builder.Services.AddEasyCoreRemoteApiK8sClients(options =>
 {
     options.K8sNamespace = "default";
     // 最终：{ServiceName}.default.svc.cluster.local
@@ -400,9 +400,9 @@ public interface IProviderNacosTestAppService : IRemoteAppService, ITransientDep
 ### 12.3 Consumer 注册
 
 ```csharp
-builder.Services.EasyCoreRemoteApiNacosClients();
+builder.Services.AddEasyCoreRemoteApiNacosClients();
 // 或覆盖配置：
-// builder.Services.EasyCoreRemoteApiNacosClients(o => o.ServerAddresses = "http://nacos:8848");
+// builder.Services.AddEasyCoreRemoteApiNacosClients(o => o.ServerAddresses = "http://nacos:8848");
 ```
 
 解析链路：`GET /nacos/v1/ns/instance/list?healthyOnly=true` → 随机健康实例 → `http://ip:port/`。
@@ -440,7 +440,7 @@ public interface IProviderDaprTestAppService : IRemoteAppService, ITransientDepe
 ### 13.3 Consumer 注册
 
 ```csharp
-builder.Services.EasyCoreRemoteApiDaprClients();
+builder.Services.AddEasyCoreRemoteApiDaprClients();
 ```
 
 路径改写：`api/Foo/GetDto` → `/v1.0/invoke/provider/method/api/Foo/GetDto`。
@@ -521,10 +521,10 @@ dotnet run --project demo/Consumer/Consumer.Host
 
 相对早期 Demo / 文档中的写法：
 
-| 旧版 | 当前（8.0） |
+| 旧版 | 当前（8.3.0） |
 |---|---|
 | `EasyCore.Dependencie` / `ITransientDependencie` | `EasyCore.Dependency` / `ITransientDependency` |
-| `EasyCoreDependencie()` | `EasyCoreDependency()` |
+| `EasyCoreDependencie()` / `EasyCoreDependency()` | `AddEasyCoreDependency()` |
 | `builder.EasyCoreConsul(args)...` | `builder.AddEasyCoreConsul()...` |
 | AutoMapper | **Mapster** |
 | 远端代理激活实现类 | **仅接口** DispatchProxy |
@@ -551,7 +551,7 @@ dotnet run --project demo/Consumer/Consumer.Host
 ## 19. FAQ
 
 **Q: Swagger 里看不到 AppService？**  
-A: 确认类继承 `EasyCoreAppService`，并调用了 `EasyCoreDynamicApi()` + `EasyCoreDependency()`（或等价 DI 注册）。
+A: 确认类继承 `EasyCoreAppService`，并调用了 `AddEasyCoreDynamicApi()` + `AddEasyCoreDependency()`（或等价 DI 注册）。
 
 **Q: Consumer 注入远端接口却走到本地实现 / 报缺依赖？**  
 A: 8.0 起仅在**没有本地实现**时注册代理。Provider 宿主会跳过；Consumer 不应引用 Provider 实现项目。
@@ -575,7 +575,7 @@ A: 会。当前请求存在 Authorization / 租户头时，远端代理会尽力
 
 ## 20. License
 
-[MulanPSL-2.0](https://licenses.nuget.org/MulanPSL-2.0) — 详见项目与 NuGet 包元数据。
+MIT — 详见 [LICENSE](LICENSE) 与 NuGet 包声明。
 
 ---
 

@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using EasyCore.AspNetCore.Mvc.RemoteServices.K8sOptions;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -15,7 +15,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// Skips interfaces that already have a local implementation.
         /// Reads <c>K8s:*</c> from configuration when <paramref name="configure"/> is omitted.
         /// </summary>
-        public static IServiceCollection EasyCoreRemoteApiK8sClients(
+        public static IServiceCollection AddEasyCoreRemoteApiK8sClients(
             this IServiceCollection services,
             Action<K8sOption>? configure = null)
         {

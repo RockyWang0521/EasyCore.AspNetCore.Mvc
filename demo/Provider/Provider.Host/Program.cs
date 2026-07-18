@@ -22,11 +22,11 @@ namespace Provider.Host
 
             builder.Services.AddDbContext<TestDbContext>();
 
-            builder.Services.EasyCoreDynamicApi();
-            builder.Services.EasyCoreAppServices();
-            builder.Services.EasyCoreDependency();
-            builder.Services.EasyCoreEFCoreRepository();
-            builder.Services.EasyCoreRemoteApiClients();
+            builder.Services.AddEasyCoreDynamicApi();
+            builder.Services.AddEasyCoreAppServices();
+            builder.Services.AddEasyCoreDependency();
+            builder.Services.AddEasyCoreEFCoreRepository();
+            builder.Services.AddEasyCoreRemoteApiClients();
 
             // Register this Provider instance into Consul (ServiceName=Provider).
             builder.AddEasyCoreConsul()

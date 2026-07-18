@@ -14,7 +14,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// Registers interface-only proxies for contracts marked with <see cref="DaprAppAttribute"/>.
         /// Skips interfaces that already have a local implementation.
         /// </summary>
-        public static IServiceCollection EasyCoreRemoteApiDaprClients(
+        public static IServiceCollection AddEasyCoreRemoteApiDaprClients(
             this IServiceCollection services,
             Action<DaprOption>? configure = null)
         {

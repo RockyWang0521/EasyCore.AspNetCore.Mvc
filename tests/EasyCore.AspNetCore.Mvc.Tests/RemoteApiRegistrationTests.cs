@@ -62,7 +62,7 @@ public class RemoteApiRegistrationTests
 
         var services = new ServiceCollection();
         services.AddSingleton<IConfiguration>(configuration);
-        services.EasyCoreRemoteApiClients();
+        services.AddEasyCoreRemoteApiClients();
 
         var descriptor = services.Single(d => d.ServiceType == typeof(IProxyOnlyRemoteService));
         Assert.NotNull(descriptor.ImplementationFactory);
@@ -76,7 +76,7 @@ public class RemoteApiRegistrationTests
         services.AddSingleton<IConfiguration>(new TestConfiguration(new Dictionary<string, string?>()));
         services.AddTransient<IHostedRemoteService, HostedRemoteService>();
 
-        services.EasyCoreRemoteApiClients();
+        services.AddEasyCoreRemoteApiClients();
 
         var descriptor = services.Single(d => d.ServiceType == typeof(IHostedRemoteService));
         Assert.Equal(typeof(HostedRemoteService), descriptor.ImplementationType);

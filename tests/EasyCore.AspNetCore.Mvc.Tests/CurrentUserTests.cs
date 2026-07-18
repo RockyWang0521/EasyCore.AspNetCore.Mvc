@@ -24,7 +24,7 @@ public class CurrentUserTests
         var accessor = new HttpContextAccessor { HttpContext = context };
         var services = new ServiceCollection();
         services.AddSingleton<IHttpContextAccessor>(accessor);
-        services.EasyCoreAppServices();
+        services.AddEasyCoreAppServices();
 
         using var provider = services.BuildServiceProvider();
         var currentUser = provider.GetRequiredService<ICurrentUser>();

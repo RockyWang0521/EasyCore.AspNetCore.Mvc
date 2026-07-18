@@ -16,23 +16,23 @@ namespace Consumer.Host
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.EasyCoreDynamicApi();
-            builder.Services.EasyCoreAppServices();
-            builder.Services.EasyCoreDependency();
-            builder.Services.EasyCoreRemoteApiClients();
-            builder.Services.EasyCoreRemoteApiConsulClients();
+            builder.Services.AddEasyCoreDynamicApi();
+            builder.Services.AddEasyCoreAppServices();
+            builder.Services.AddEasyCoreDependency();
+            builder.Services.AddEasyCoreRemoteApiClients();
+            builder.Services.AddEasyCoreRemoteApiConsulClients();
             builder.AddEasyCoreConsul()
                 .AddEasyCoreConsulCache()
                 .AddEasyCoreConsulLocking()
                 .AddEasyCoreConsulServer();
-            //builder.Services.EasyCoreRemoteApiK8sClients(options =>
+            //builder.Services.AddEasyCoreRemoteApiK8sClients(options =>
             //{
             //    options.K8sNamespace = "default";
             //    // Final DNS: {K8sDns.ServiceName}.default.svc.cluster.local
             //    options.K8sClusterDomain = "cluster.local";
             //});
-            //builder.Services.EasyCoreRemoteApiNacosClients(); // needs Nacos:ServerAddresses
-            //builder.Services.EasyCoreRemoteApiDaprClients();  // needs Dapr sidecar / Dapr:HttpEndpoint
+            //builder.Services.AddEasyCoreRemoteApiNacosClients(); // needs Nacos:ServerAddresses
+            //builder.Services.AddEasyCoreRemoteApiDaprClients();  // needs Dapr sidecar / Dapr:HttpEndpoint
 
             var app = builder.Build();
 

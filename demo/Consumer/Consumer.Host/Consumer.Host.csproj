@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="EasyCore.Consul" Version="8.1.0" />
-    <PackageReference Include="EasyCore.Dependency" Version="8.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
@@ -18,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Consumer.AppService\Consumer.AppService.csproj" />
+    <ProjectReference Include="..\..\..\..\EasyCore.Dependency\src\EasyCore.Dependency\EasyCore.Dependency.csproj" />
   </ItemGroup>
 
 </Project>
