@@ -31,6 +31,11 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
             if (string.IsNullOrWhiteSpace(option.K8sNamespace) || string.IsNullOrWhiteSpace(option.K8sClusterDomain))
                 throw new InvalidOperationException("K8sOption is not configured.");
 
+            // Normalize: users may pass either "cluster.local" or the older "svc.cluster.local".
+            var clusterDomain = option.K8sClusterDomain.Trim().Trim('.');
+            if (clusterDomain.StartsWith("svc.", StringComparison.OrdinalIgnoreCase))
+                clusterDomain = clusterDomain["svc.".Length..];
+
             services.AddOptions();
             services.Configure(configure);
             services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
@@ -42,14 +47,14 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                 if (attr == null)
                     continue;
 
-                if (!RemoteApiRegistrationHelper.ShouldRegisterRemoteProxy(
-                        services, iface, requireRemoteConfig: false, hasRemoteConfig: false))
+                // Provider hosts already have a concrete AppService; do not replace it with an HTTP proxy.
+                if (RemoteApiRegistrationHelper.HasLocalImplementation(services, iface))
                     continue;
 
                 var clientName = iface.FullName!;
-                var fullDns = $"http://{attr.ServiceName}.{option.K8sNamespace}.{option.K8sClusterDomain}";
+                var baseAddress = BuildK8sBaseAddress(attr.ServiceName, option.K8sNamespace, clusterDomain, attr.Port);
 
-                services.AddHttpClient(clientName, client => client.BaseAddress = new Uri(fullDns));
+                services.AddHttpClient(clientName, client => client.BaseAddress = baseAddress);
 
                 RemoteApiRegistrationHelper.ReplaceWithInterfaceProxy(services, iface, sp =>
                 {
@@ -60,6 +65,24 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
             }
 
             return services;
+        }
+
+        /// <summary>
+        /// Builds a Kubernetes service DNS base address ending with a trailing slash.
+        /// Format: <c>http://{service}.{namespace}.svc.{clusterDomain}[:port]/</c>
+        /// </summary>
+        internal static Uri BuildK8sBaseAddress(string serviceName, string @namespace, string clusterDomain, int? port)
+        {
+            if (string.IsNullOrWhiteSpace(serviceName))
+                throw new ArgumentException("Kubernetes service name is required.", nameof(serviceName));
+            if (string.IsNullOrWhiteSpace(@namespace))
+                throw new ArgumentException("Kubernetes namespace is required.", nameof(@namespace));
+            if (string.IsNullOrWhiteSpace(clusterDomain))
+                throw new ArgumentException("Kubernetes cluster domain is required.", nameof(clusterDomain));
+
+            var host = $"{serviceName.Trim()}.{@namespace.Trim()}.svc.{clusterDomain.Trim().Trim('.')}";
+            var authority = port is null or 80 ? host : $"{host}:{port.Value}";
+            return new Uri($"http://{authority}/");
         }
     }
 }

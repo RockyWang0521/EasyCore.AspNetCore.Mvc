@@ -46,7 +46,12 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                 var clientName = iface.FullName!;
                 var serviceName = attr.ServiceName;
 
-                services.AddHttpClient(clientName)
+                // HttpClient rejects relative RequestUri when BaseAddress is unset, before handlers run.
+                // Use a placeholder host; ConsulResolvingHandler rewrites it to the discovered instance.
+                services.AddHttpClient(clientName, client =>
+                    {
+                        client.BaseAddress = new Uri("http://consul.placeholder/");
+                    })
                     .AddHttpMessageHandler(sp =>
                         new ConsulResolvingHandler(sp.GetRequiredService<ConsulServiceDiscovery>(), serviceName));
 

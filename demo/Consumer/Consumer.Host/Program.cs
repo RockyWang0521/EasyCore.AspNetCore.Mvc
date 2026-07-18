@@ -2,7 +2,7 @@ using EasyCore.AspNetCore.Mvc.AppService;
 using EasyCore.AspNetCore.Mvc.DynamicApi;
 using EasyCore.AspNetCore.Mvc.RemoteServices;
 using EasyCore.Consul;
-using EasyCore.Dependencie;
+using EasyCore.Dependency;
 
 namespace Consumer.Host
 {
@@ -18,14 +18,18 @@ namespace Consumer.Host
 
             builder.Services.EasyCoreDynamicApi();
             builder.Services.EasyCoreAppServices();
-            builder.Services.EasyCoreDependencie();
+            builder.Services.EasyCoreDependency();
             builder.Services.EasyCoreRemoteApiClients();
             builder.Services.EasyCoreRemoteApiConsulClients();
-            builder.EasyCoreConsul(args).EasyCoreConsulCache().EasyCoreConsulLocking().EasyCoreConsulServer();
+            builder.AddEasyCoreConsul()
+                .AddEasyCoreConsulCache()
+                .AddEasyCoreConsulLocking()
+                .AddEasyCoreConsulServer();
             //builder.Services.EasyCoreRemoteApiK8sClients(options =>
             //{
             //    options.K8sNamespace = "default";
-            //    options.K8sClusterDomain = "svc.cluster.local";
+            //    // Final DNS: {K8sDns.ServiceName}.default.svc.cluster.local
+            //    options.K8sClusterDomain = "cluster.local";
             //});
 
             var app = builder.Build();

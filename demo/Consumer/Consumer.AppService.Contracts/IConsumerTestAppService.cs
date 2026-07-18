@@ -1,9 +1,9 @@
-﻿using EasyCore.Dependencie;
+﻿using EasyCore.Dependency;
 using Provider.AppService.Contracts;
 
 namespace Consumer.AppService.Contracts
 {
-    public interface IConsumerTestAppService : ITransientDependencie
+    public interface IConsumerTestAppService : ITransientDependency
     {
         Task<PostDto> GetRemoteApi();
 

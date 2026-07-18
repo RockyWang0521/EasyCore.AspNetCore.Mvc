@@ -5,18 +5,15 @@
     /// </summary>
     public class K8sOption
     {
-# pragma warning disable CS8618
-
         /// <summary>
         /// Gets or sets the Kubernetes namespace (for example, <c>default</c>).
         /// </summary>
-        public string K8sNamespace { set; get; }
+        public string K8sNamespace { get; set; } = "default";
 
         /// <summary>
-        /// Gets or sets the cluster DNS suffix (for example, <c>svc.cluster.local</c>).
+        /// Gets or sets the cluster domain (for example, <c>cluster.local</c>).
+        /// The final host is <c>{service}.{namespace}.svc.{K8sClusterDomain}</c>.
         /// </summary>
-        public string K8sClusterDomain { set; get; }
-
-# pragma warning restore CS8618
+        public string K8sClusterDomain { get; set; } = "cluster.local";
     }
 }

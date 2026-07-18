@@ -1,10 +1,10 @@
 ﻿using EasyCore.AspNetCore.Mvc.RemoteServices;
-using EasyCore.Dependencie;
+using EasyCore.Dependency;
 
 namespace Provider.AppService.Contracts
 {
     [ApiHost("Provider")]
-    public interface IProviderTestAppService : IRemoteAppService, ITransientDependencie
+    public interface IProviderTestAppService : IRemoteAppService, ITransientDependency
     {
         Task PostDto(PostDto dto);
 
@@ -12,6 +12,6 @@ namespace Provider.AppService.Contracts
 
         Task PutDto(PostDto dto);
 
-        Task DeleteDto(int id);
+        Task DeleteDto(Guid id);
     }
 }

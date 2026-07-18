@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EasyCore.Dependencie" Version="1.0.2" />
-    <PackageReference Include="EasyCore.Consul" Version="1.0.0" />
+    <PackageReference Include="EasyCore.Dependency" Version="8.0.1" />
+    <PackageReference Include="EasyCore.Consul" Version="8.1.0" />
   </ItemGroup>
 
   <ItemGroup>

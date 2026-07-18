@@ -2,9 +2,11 @@ using EasyCore.AspNetCore.Mvc.AppService;
 using EasyCore.AspNetCore.Mvc.DynamicApi;
 using EasyCore.AspNetCore.Mvc.RemoteServices;
 using EasyCore.Consul;
-using EasyCore.Dependencie;
+using EasyCore.Dependency;
 using EasyCore.EFCoreRepository;
+using Microsoft.EntityFrameworkCore;
 using Provider.EFCore;
+using Provider.EFCore.Entity;
 
 namespace Provider.Host
 {
@@ -22,14 +24,19 @@ namespace Provider.Host
 
             builder.Services.EasyCoreDynamicApi();
             builder.Services.EasyCoreAppServices();
-            builder.Services.EasyCoreDependencie();
+            builder.Services.EasyCoreDependency();
             builder.Services.EasyCoreEFCoreRepository();
             builder.Services.EasyCoreRemoteApiClients();
 
             // Register this Provider instance into Consul (ServiceName=Provider).
-            builder.EasyCoreConsul(args).EasyCoreConsulCache().EasyCoreConsulLocking().EasyCoreConsulServer();
+            builder.AddEasyCoreConsul()
+                .AddEasyCoreConsulCache()
+                .AddEasyCoreConsulLocking()
+                .AddEasyCoreConsulServer();
 
             var app = builder.Build();
+
+            InitializeDatabase(app);
 
             if (app.Environment.IsDevelopment())
             {
@@ -41,6 +48,25 @@ namespace Provider.Host
             app.UseAuthorization();
             app.MapControllers();
             app.Run();
+        }
+
+        private static void InitializeDatabase(WebApplication app)
+        {
+            using var scope = app.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<TestDbContext>();
+            db.Database.Migrate();
+
+            if (!db.TestEntity.Any())
+            {
+                db.TestEntity.Add(new TestEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Hello World",
+                    Age = 18,
+                    ConcurrencyStamp = Guid.NewGuid().ToString("N")
+                });
+                db.SaveChanges();
+            }
         }
     }
 }
