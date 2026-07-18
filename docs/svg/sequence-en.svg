@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="380" viewBox="0 0 980 380">
+  <rect width="980" height="380" rx="16" fill="#0f1419"/>
+  <text x="40" y="40" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="18" font-weight="700">Remote Call Lifecycle — Discover / Proxy / HTTP</text>
+
+  <rect x="30" y="80" width="150" height="70" rx="10" fill="#243044" stroke="#3d9cf0"/>
+  <text x="105" y="110" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">1. Contract</text>
+  <text x="105" y="130" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">IRemoteAppService</text>
+
+  <rect x="200" y="80" width="150" height="70" rx="10" fill="#243044" stroke="#3d9cf0"/>
+  <text x="275" y="110" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">2. Scan</text>
+  <text x="275" y="130" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">FindRemoteInterfaces</text>
+
+  <rect x="370" y="80" width="150" height="70" rx="10" fill="#243044" stroke="#3ecf8e"/>
+  <text x="445" y="110" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">3. Skip Local</text>
+  <text x="445" y="130" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">HasLocalImplementation</text>
+
+  <rect x="540" y="80" width="150" height="70" rx="10" fill="#243044" stroke="#f0b429"/>
+  <text x="615" y="110" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">4. DispatchProxy</text>
+  <text x="615" y="130" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">Interface-only</text>
+
+  <rect x="710" y="80" width="150" height="70" rx="10" fill="#243044" stroke="#3ecf8e"/>
+  <text x="785" y="110" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">5. HTTP</text>
+  <text x="785" y="130" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">Get*/Post*/Put*/Delete*</text>
+
+  <rect x="880" y="80" width="70" height="70" rx="10" fill="#243044" stroke="#f07178"/>
+  <text x="915" y="110" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="12" font-weight="700">Headers</text>
+  <text x="915" y="130" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="10">Token</text>
+
+  <path d="M180 115 H200" stroke="#8fa3bc" stroke-width="2"/>
+  <path d="M350 115 H370" stroke="#8fa3bc" stroke-width="2"/>
+  <path d="M520 115 H540" stroke="#8fa3bc" stroke-width="2"/>
+  <path d="M690 115 H710" stroke="#8fa3bc" stroke-width="2"/>
+  <path d="M860 115 H880" stroke="#8fa3bc" stroke-width="2"/>
+
+  <rect x="60" y="200" width="860" height="130" rx="12" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="490" y="235" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">BaseAddress Resolution</text>
+  <text x="490" y="265" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">ApiHost &lt;- RemoteServices | Consul &lt;- Health | K8s &lt;- svc.ns.svc.domain</text>
+  <text x="490" y="290" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Nacos &lt;- /nacos/v1/ns/instance/list | Dapr &lt;- /v1.0/invoke/{appId}/method/{route}</text>
+  <text x="490" y="312" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Auth: forward inbound Authorization / X-Tenant-Id / X-Trace-Id</text>
+</svg>

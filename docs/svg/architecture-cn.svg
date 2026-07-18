@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="500" viewBox="0 0 980 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f1419"/>
+      <stop offset="100%" stop-color="#1a2332"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="980" height="500" rx="16" fill="url(#bg)"/>
+  <text x="40" y="42" fill="#e8eef7" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="20" font-weight="700">EasyCore.AspNetCore.Mvc Architecture</text>
+  <text x="40" y="66" fill="#8fa3bc" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="13">Dynamic API / AppService / Remote DispatchProxy / ApiHost / Consul / K8s / Nacos / Dapr</text>
+
+  <rect x="40" y="100" width="170" height="100" rx="12" fill="#243044" stroke="#3d9cf0" stroke-width="2" filter="url(#shadow)"/>
+  <text x="125" y="140" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">ASP.NET Core</text>
+  <text x="125" y="162" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Host / Swagger</text>
+  <text x="125" y="180" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">DI / HttpClient</text>
+
+  <rect x="250" y="90" width="240" height="120" rx="12" fill="#243044" stroke="#3ecf8e" stroke-width="2" filter="url(#shadow)"/>
+  <text x="370" y="125" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">EasyCore.AspNetCore.Mvc</text>
+  <text x="370" y="148" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">DynamicApi Controllers</text>
+  <text x="370" y="168" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">EasyCoreAppService</text>
+  <text x="370" y="188" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">RemoteHttpClientProxy</text>
+
+  <rect x="530" y="70" width="190" height="70" rx="12" fill="#243044" stroke="#f0b429" stroke-width="2" filter="url(#shadow)"/>
+  <text x="625" y="100" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">Dynamic API</text>
+  <text x="625" y="120" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">api/{Controller}/{Action}</text>
+
+  <rect x="530" y="155" width="190" height="70" rx="12" fill="#243044" stroke="#f0b429" stroke-width="2" filter="url(#shadow)"/>
+  <text x="625" y="185" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">App Helpers</text>
+  <text x="625" y="205" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">User / Tenant / Token / Guid</text>
+
+  <rect x="760" y="70" width="180" height="155" rx="12" fill="#243044" stroke="#3d9cf0" stroke-width="2" filter="url(#shadow)"/>
+  <text x="850" y="100" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="14" font-weight="700">Remote Resolve</text>
+  <text x="850" y="122" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">[ApiHost] [Consul]</text>
+  <text x="850" y="142" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">[K8sDns] [Nacos]</text>
+  <text x="850" y="162" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">[DaprApp]</text>
+  <text x="850" y="190" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="12">Header Forward</text>
+
+  <text x="40" y="270" fill="#8fa3bc" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="13">Five remote channels (opt-in, interface-only DispatchProxy)</text>
+  <rect x="40" y="290" width="170" height="70" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="125" y="320" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">ApiHost</text>
+  <text x="125" y="342" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">RemoteServices</text>
+  <rect x="230" y="290" width="170" height="70" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="315" y="320" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">Consul</text>
+  <text x="315" y="342" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">Health API</text>
+  <rect x="420" y="290" width="170" height="70" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="505" y="320" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">Kubernetes</text>
+  <text x="505" y="342" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">Cluster DNS</text>
+  <rect x="610" y="290" width="170" height="70" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="695" y="320" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">Nacos</text>
+  <text x="695" y="342" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">Naming OpenAPI</text>
+  <rect x="800" y="290" width="140" height="70" rx="10" fill="#1a2332" stroke="#2f3f55"/>
+  <text x="870" y="320" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="13" font-weight="700">Dapr</text>
+  <text x="870" y="342" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="11">Sidecar invoke</text>
+
+  <path d="M210 150 H250" stroke="#3d9cf0" stroke-width="2"/>
+  <path d="M490 130 H530" stroke="#f0b429" stroke-width="2"/>
+  <path d="M490 190 H530" stroke="#f0b429" stroke-width="2"/>
+  <path d="M490 150 H760" stroke="#3d9cf0" stroke-width="2"/>
+
+  <text x="40" y="420" fill="#8fa3bc" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="12">Skip remote proxy when local impl exists / Mapster / EasyCore.Dependency</text>
+  <text x="40" y="450" fill="#8fa3bc" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="12">Authorization / X-Tenant-Id / X-Trace-Id via HttpContextHeaderProvider</text>
+</svg>

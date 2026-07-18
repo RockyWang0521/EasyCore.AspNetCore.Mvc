@@ -10,9 +10,10 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// <summary>
         /// Finds all loaded remote app-service interfaces except <see cref="IRemoteAppService"/> itself.
         /// </summary>
-        /// <returns>An enumerable of interface types that implement <see cref="IRemoteAppService"/>.</returns>
         public static IEnumerable<Type> FindRemoteInterfaces()
         {
+            EnsureReferencedAssembliesLoaded();
+
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => !a.IsDynamic)
                 .SelectMany(SafeGetTypes)
@@ -24,8 +25,6 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// <summary>
         /// Tries to read the already-registered <see cref="IConfiguration"/> instance from the service collection.
         /// </summary>
-        /// <param name="services">The service collection.</param>
-        /// <returns>The configuration instance, or <c>null</c> when it is not available as an instance registration.</returns>
         public static IConfiguration? TryGetConfiguration(IServiceCollection services)
         {
             foreach (var descriptor in services)
@@ -41,12 +40,8 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         }
 
         /// <summary>
-        /// Determines whether a concrete local implementation of the remote interface exists
-        /// in DI descriptors or in currently loaded assemblies.
+        /// Determines whether a concrete local implementation of the remote interface exists.
         /// </summary>
-        /// <param name="services">The service collection.</param>
-        /// <param name="iface">The remote contract interface.</param>
-        /// <returns><c>true</c> when a concrete implementation type is found; otherwise <c>false</c>.</returns>
         public static bool HasLocalImplementation(IServiceCollection services, Type iface)
         {
             foreach (var descriptor in services)
@@ -59,7 +54,6 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                     return true;
                 }
 
-                // Some DI registrations map the concrete type to itself.
                 if (descriptor.ServiceType is Type serviceType
                     && serviceType.IsClass
                     && !serviceType.IsAbstract
@@ -69,7 +63,8 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                 }
             }
 
-            // Fallback: host apps may expose AppServices via MVC without an interface DI mapping yet.
+            EnsureReferencedAssembliesLoaded();
+
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => !a.IsDynamic)
                 .SelectMany(SafeGetTypes)
@@ -79,9 +74,6 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// <summary>
         /// Checks whether <c>RemoteServices:{configKey}</c> has a non-empty value.
         /// </summary>
-        /// <param name="configuration">The application configuration.</param>
-        /// <param name="configKey">The remote service configuration key.</param>
-        /// <returns><c>true</c> when a remote base URL is configured; otherwise <c>false</c>.</returns>
         public static bool HasApiHostConfig(IConfiguration? configuration, string configKey)
         {
             if (configuration == null || string.IsNullOrWhiteSpace(configKey))
@@ -92,16 +84,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
 
         /// <summary>
         /// Decides whether a remote proxy should be registered for the given interface.
-        /// For ApiHost, skips when a local implementation exists and remote URL is not configured.
-        /// For Consul/K8s, skips whenever a local implementation exists.
         /// </summary>
-        /// <param name="services">The service collection.</param>
-        /// <param name="iface">The remote contract interface.</param>
-        /// <param name="requireRemoteConfig">
-        /// When <c>true</c>, remote configuration presence is considered (ApiHost mode).
-        /// </param>
-        /// <param name="hasRemoteConfig">Whether remote endpoint configuration is available.</param>
-        /// <returns><c>true</c> when an interface proxy should be registered; otherwise <c>false</c>.</returns>
         public static bool ShouldRegisterRemoteProxy(
             IServiceCollection services,
             Type iface,
@@ -122,10 +105,6 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// <summary>
         /// Removes existing registrations for <paramref name="iface"/> and registers an interface-only proxy factory.
         /// </summary>
-        /// <param name="services">The service collection.</param>
-        /// <param name="iface">The remote contract interface.</param>
-        /// <param name="factory">Factory that creates the DispatchProxy instance.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="iface"/> is not a valid remote interface.</exception>
         public static void ReplaceWithInterfaceProxy(
             IServiceCollection services,
             Type iface,
@@ -145,10 +124,56 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         }
 
         /// <summary>
-        /// Safely enumerates types from an assembly, tolerating reflection load failures.
+        /// Eagerly loads referenced assemblies so contract interfaces are discoverable at registration time.
         /// </summary>
-        /// <param name="assembly">The assembly to inspect.</param>
-        /// <returns>Loaded types from the assembly.</returns>
+        private static void EnsureReferencedAssembliesLoaded()
+        {
+            var loadedNames = new HashSet<string>(
+                AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(a => !a.IsDynamic)
+                    .Select(a => a.GetName().Name!)
+                    .Where(n => !string.IsNullOrEmpty(n)),
+                StringComparer.OrdinalIgnoreCase);
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).ToArray())
+            {
+                AssemblyName[] references;
+                try
+                {
+                    references = assembly.GetReferencedAssemblies();
+                }
+                catch
+                {
+                    continue;
+                }
+
+                foreach (var reference in references)
+                {
+                    if (reference.Name == null || loadedNames.Contains(reference.Name))
+                        continue;
+
+                    // Skip framework assemblies — they never contain user remote contracts.
+                    if (reference.Name.StartsWith("System.", StringComparison.OrdinalIgnoreCase)
+                        || reference.Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase)
+                        || reference.Name.Equals("netstandard", StringComparison.OrdinalIgnoreCase)
+                        || reference.Name.Equals("mscorlib", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        Assembly.Load(reference);
+                        loadedNames.Add(reference.Name);
+                    }
+                    catch
+                    {
+                        // Ignore assemblies that cannot be loaded in this context.
+                    }
+                }
+            }
+        }
+
         private static IEnumerable<Type> SafeGetTypes(Assembly assembly)
         {
             try

@@ -31,6 +31,8 @@ namespace Consumer.Host
             //    // Final DNS: {K8sDns.ServiceName}.default.svc.cluster.local
             //    options.K8sClusterDomain = "cluster.local";
             //});
+            //builder.Services.EasyCoreRemoteApiNacosClients(); // needs Nacos:ServerAddresses
+            //builder.Services.EasyCoreRemoteApiDaprClients();  // needs Dapr sidecar / Dapr:HttpEndpoint
 
             var app = builder.Build();
 

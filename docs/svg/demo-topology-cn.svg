@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="320" viewBox="0 0 980 320">
+  <rect width="980" height="320" rx="16" fill="#0f1419"/>
+  <text x="40" y="40" fill="#e8eef7" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="18" font-weight="700">Demo Topology - Provider / Consumer / Consul</text>
+
+  <rect x="60" y="90" width="240" height="140" rx="14" fill="#243044" stroke="#3ecf8e" stroke-width="2"/>
+  <text x="180" y="130" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="16" font-weight="700">Provider.Host</text>
+  <text x="180" y="155" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">:5094</text>
+  <text x="180" y="180" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="12">Dynamic API + EFCore</text>
+  <text x="180" y="205" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Consul Register</text>
+
+  <rect x="370" y="100" width="240" height="120" rx="14" fill="#243044" stroke="#f0b429" stroke-width="2"/>
+  <text x="490" y="145" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="16" font-weight="700">Consul</text>
+  <text x="490" y="170" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">:8500 UI</text>
+  <text x="490" y="195" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Service = Provider</text>
+
+  <rect x="680" y="90" width="240" height="140" rx="14" fill="#243044" stroke="#3d9cf0" stroke-width="2"/>
+  <text x="800" y="130" text-anchor="middle" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="16" font-weight="700">Consumer.Host</text>
+  <text x="800" y="155" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">:5244</text>
+  <text x="800" y="180" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">ApiHost + Consul Proxy</text>
+  <text x="800" y="205" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="12">Inject interface and call</text>
+
+  <path d="M300 160 H370" stroke="#f0b429" stroke-width="2"/>
+  <path d="M610 160 H680" stroke="#3d9cf0" stroke-width="2"/>
+  <path d="M800 230 C800 270 180 270 180 230" stroke="#3ecf8e" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+  <text x="490" y="290" text-anchor="middle" fill="#8fa3bc" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="12">Dashed: ApiHost to :5094 / Solid: discover via Consul</text>
+</svg>

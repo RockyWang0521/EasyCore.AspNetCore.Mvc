@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="360" viewBox="0 0 980 360">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1b1f24"/>
+      <stop offset="100%" stop-color="#12151a"/>
+    </linearGradient>
+  </defs>
+  <rect width="980" height="360" rx="16" fill="url(#bg)" stroke="#2f3f55"/>
+  <text x="36" y="40" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="18" font-weight="700">Dynamic API - Swagger</text>
+  <text x="36" y="64" fill="#8fa3bc" font-family="Segoe UI, Microsoft YaHei, Arial" font-size="13">EasyCoreAppService becomes controllers automatically</text>
+
+  <rect x="36" y="90" width="420" height="230" rx="12" fill="#243044" stroke="#3d9cf0"/>
+  <text x="56" y="120" fill="#3ecf8e" font-family="Consolas, monospace" font-size="13">class ProviderTestAppService</text>
+  <text x="56" y="145" fill="#8fa3bc" font-family="Consolas, monospace" font-size="12">  : EasyCoreAppService,</text>
+  <text x="56" y="165" fill="#8fa3bc" font-family="Consolas, monospace" font-size="12">    IProviderTestAppService</text>
+  <text x="56" y="200" fill="#e8eef7" font-family="Consolas, monospace" font-size="12">Task&lt;PostDto&gt; GetDto()</text>
+  <text x="56" y="222" fill="#e8eef7" font-family="Consolas, monospace" font-size="12">Task PostDto(PostDto dto)</text>
+  <text x="56" y="244" fill="#e8eef7" font-family="Consolas, monospace" font-size="12">Task PutDto(PostDto dto)</text>
+  <text x="56" y="266" fill="#e8eef7" font-family="Consolas, monospace" font-size="12">Task DeleteDto(Guid id)</text>
+  <text x="56" y="300" fill="#8fa3bc" font-family="Segoe UI, Arial" font-size="12">Method name maps to HTTP verb</text>
+
+  <path d="M470 205 H520" stroke="#f0b429" stroke-width="3"/>
+  <polygon points="520,198 540,205 520,212" fill="#f0b429"/>
+
+  <rect x="560" y="90" width="380" height="230" rx="12" fill="#1a2332" stroke="#3ecf8e"/>
+  <text x="580" y="120" fill="#e8eef7" font-family="Segoe UI, Arial" font-size="14" font-weight="700">Swagger</text>
+  <rect x="580" y="140" width="70" height="24" rx="6" fill="#61affe"/>
+  <text x="615" y="157" text-anchor="middle" fill="#fff" font-family="Segoe UI, Arial" font-size="11" font-weight="700">GET</text>
+  <text x="665" y="157" fill="#c8d3e0" font-family="Consolas, monospace" font-size="12">/api/ProviderTest/GetDto</text>
+
+  <rect x="580" y="180" width="70" height="24" rx="6" fill="#49cc90"/>
+  <text x="615" y="197" text-anchor="middle" fill="#fff" font-family="Segoe UI, Arial" font-size="11" font-weight="700">POST</text>
+  <text x="665" y="197" fill="#c8d3e0" font-family="Consolas, monospace" font-size="12">/api/ProviderTest/PostDto</text>
+
+  <rect x="580" y="220" width="70" height="24" rx="6" fill="#fca130"/>
+  <text x="615" y="237" text-anchor="middle" fill="#fff" font-family="Segoe UI, Arial" font-size="11" font-weight="700">PUT</text>
+  <text x="665" y="237" fill="#c8d3e0" font-family="Consolas, monospace" font-size="12">/api/ProviderTest/PutDto</text>
+
+  <rect x="580" y="260" width="70" height="24" rx="6" fill="#f93e3e"/>
+  <text x="615" y="277" text-anchor="middle" fill="#fff" font-family="Segoe UI, Arial" font-size="11" font-weight="700">DEL</text>
+  <text x="665" y="277" fill="#c8d3e0" font-family="Consolas, monospace" font-size="12">/api/ProviderTest/DeleteDto</text>
+</svg>

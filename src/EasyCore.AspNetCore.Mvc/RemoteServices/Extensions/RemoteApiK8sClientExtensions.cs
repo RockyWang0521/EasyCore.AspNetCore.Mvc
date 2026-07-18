@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using EasyCore.AspNetCore.Mvc.RemoteServices.K8sOptions;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace EasyCore.AspNetCore.Mvc.RemoteServices
 {
@@ -12,34 +13,19 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         /// <summary>
         /// Registers interface-only proxies for contracts marked with <see cref="K8sDnsAttribute"/>.
         /// Skips interfaces that already have a local implementation.
+        /// Reads <c>K8s:*</c> from configuration when <paramref name="configure"/> is omitted.
         /// </summary>
-        /// <param name="services">The service collection to configure.</param>
-        /// <param name="configure">Configures Kubernetes namespace and cluster domain options.</param>
-        /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <c>null</c>.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when required K8s options are missing.</exception>
         public static IServiceCollection EasyCoreRemoteApiK8sClients(
             this IServiceCollection services,
-            Action<K8sOption> configure)
+            Action<K8sOption>? configure = null)
         {
-            if (configure == null)
-                throw new ArgumentNullException(nameof(configure));
-
-            var option = new K8sOption();
-            configure(option);
-
-            if (string.IsNullOrWhiteSpace(option.K8sNamespace) || string.IsNullOrWhiteSpace(option.K8sClusterDomain))
-                throw new InvalidOperationException("K8sOption is not configured.");
-
-            // Normalize: users may pass either "cluster.local" or the older "svc.cluster.local".
-            var clusterDomain = option.K8sClusterDomain.Trim().Trim('.');
-            if (clusterDomain.StartsWith("svc.", StringComparison.OrdinalIgnoreCase))
-                clusterDomain = clusterDomain["svc.".Length..];
-
             services.AddOptions();
-            services.Configure(configure);
-            services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
             services.AddHttpContextAccessor();
+            services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
+
+            services.AddOptions<K8sOption>()
+                .BindConfiguration("K8s")
+                .PostConfigure(o => configure?.Invoke(o));
 
             foreach (var iface in RemoteApiRegistrationHelper.FindRemoteInterfaces())
             {
@@ -47,14 +33,33 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                 if (attr == null)
                     continue;
 
-                // Provider hosts already have a concrete AppService; do not replace it with an HTTP proxy.
                 if (RemoteApiRegistrationHelper.HasLocalImplementation(services, iface))
                     continue;
 
                 var clientName = iface.FullName!;
-                var baseAddress = BuildK8sBaseAddress(attr.ServiceName, option.K8sNamespace, clusterDomain, attr.Port);
+                var serviceName = attr.ServiceName;
+                var port = attr.Port;
 
-                services.AddHttpClient(clientName, client => client.BaseAddress = baseAddress);
+                services.AddHttpClient(clientName, (sp, client) =>
+                    {
+                        var option = sp.GetRequiredService<IOptionsMonitor<K8sOption>>().CurrentValue;
+                        if (string.IsNullOrWhiteSpace(option.K8sNamespace)
+                            || string.IsNullOrWhiteSpace(option.K8sClusterDomain))
+                        {
+                            throw new InvalidOperationException(
+                                "K8sOption is not configured. Set K8s:K8sNamespace / K8s:K8sClusterDomain or pass configure.");
+                        }
+
+                        var clusterDomain = option.K8sClusterDomain.Trim().Trim('.');
+                        if (clusterDomain.StartsWith("svc.", StringComparison.OrdinalIgnoreCase))
+                            clusterDomain = clusterDomain["svc.".Length..];
+
+                        client.BaseAddress = BuildK8sBaseAddress(
+                            serviceName,
+                            option.K8sNamespace,
+                            clusterDomain,
+                            port);
+                    });
 
                 RemoteApiRegistrationHelper.ReplaceWithInterfaceProxy(services, iface, sp =>
                 {
@@ -80,7 +85,11 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
             if (string.IsNullOrWhiteSpace(clusterDomain))
                 throw new ArgumentException("Kubernetes cluster domain is required.", nameof(clusterDomain));
 
-            var host = $"{serviceName.Trim()}.{@namespace.Trim()}.svc.{clusterDomain.Trim().Trim('.')}";
+            var domain = clusterDomain.Trim().Trim('.');
+            if (domain.StartsWith("svc.", StringComparison.OrdinalIgnoreCase))
+                domain = domain["svc.".Length..];
+
+            var host = $"{serviceName.Trim()}.{@namespace.Trim()}.svc.{domain}";
             var authority = port is null or 80 ? host : $"{host}:{port.Value}";
             return new Uri($"http://{authority}/");
         }

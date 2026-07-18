@@ -10,16 +10,18 @@
     <IncludeSymbols>False</IncludeSymbols>
     <RepositoryType>gitee</RepositoryType>
     <Authors>WZHY</Authors>
-    <Description>.net core EasyCore.AspNetCore.Mvc.</Description>
+    <Description>.NET 8 EasyCore.AspNetCore.Mvc — dynamic API, AppService helpers, and remote DispatchProxy clients (ApiHost / Consul / K8s / Nacos / Dapr).</Description>
     <PackageProjectUrl>https://gitee.com/wzhy-0521/easy-core.-asp-net-core.-mvc.git</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MulanPSL-2.0</PackageLicenseExpression>
-    <AssemblyVersion>8.0.0.0</AssemblyVersion>
-    <FileVersion>8.0.0.0</FileVersion>
-    <Version>8.0.0</Version>
+    <AssemblyVersion>8.1.0.0</AssemblyVersion>
+    <FileVersion>8.1.0.0</FileVersion>
+    <Version>8.1.0</Version>
     <OutputType>Library</OutputType>
     <RepositoryUrl>https://gitee.com/wzhy-0521/easy-core.-asp-net-core.-mvc.git</RepositoryUrl>
     <IsPackable>true</IsPackable>
+    <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
   </PropertyGroup>
 
   <ItemGroup>

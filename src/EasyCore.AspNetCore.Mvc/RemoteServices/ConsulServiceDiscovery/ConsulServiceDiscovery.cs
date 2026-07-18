@@ -7,75 +7,74 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
     /// </summary>
     public class ConsulServiceDiscovery
     {
-        /// <summary>
-        /// The Consul client used for health lookups.
-        /// </summary>
         private readonly IConsulClient _consulClient;
-
-        /// <summary>
-        /// Logger for discovery warnings and failures.
-        /// </summary>
         private readonly ILogger<ConsulServiceDiscovery> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsulServiceDiscovery"/> class.
         /// </summary>
-        /// <param name="consulClient">The Consul client.</param>
-        /// <param name="logger">The logger instance.</param>
         public ConsulServiceDiscovery(
             IConsulClient consulClient,
             ILogger<ConsulServiceDiscovery> logger)
         {
             _consulClient = consulClient;
-
             _logger = logger;
         }
 
         /// <summary>
         /// Resolves a random healthy instance URI for the specified Consul service name.
         /// </summary>
-        /// <param name="serviceName">The Consul service name.</param>
-        /// <returns>The instance base URI, or <c>null</c> when no healthy instance is found.</returns>
         public async Task<Uri?> GetServiceUriAsync(string serviceName)
         {
             try
             {
-                var services = await _consulClient.Health.Service(serviceName, "", true);
-
+                var services = await _consulClient.Health.Service(serviceName, "", true).ConfigureAwait(false);
                 var healthyServices = services.Response;
 
                 if (healthyServices == null || healthyServices.Length == 0)
                 {
                     _logger.LogWarning("No healthy instance found for {ServiceName}", serviceName);
-
                     return null;
                 }
 
-                var random = new Random();
-
-                var serviceEntry = healthyServices[random.Next(healthyServices.Length)];
-
+                var serviceEntry = healthyServices[Random.Shared.Next(healthyServices.Length)];
                 if (serviceEntry == null)
                 {
                     _logger.LogWarning("Consul service not found: {ServiceName}", serviceName);
-
                     return null;
                 }
 
                 var address = serviceEntry.Service.Address;
+                if (string.IsNullOrWhiteSpace(address))
+                    address = serviceEntry.Node?.Address;
+
+                if (string.IsNullOrWhiteSpace(address))
+                {
+                    _logger.LogWarning(
+                        "Consul service {ServiceName} has empty Service.Address and Node.Address",
+                        serviceName);
+                    return null;
+                }
 
                 var port = serviceEntry.Service.Port;
-
-                var uri = new Uri($"http://{address}:{port}");
-
-                return uri;
+                return BuildInstanceUri(address, port);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Consul service discovery error for {ServiceName}", serviceName);
-
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Builds an HTTP base URI for an instance, wrapping IPv6 addresses in brackets.
+        /// </summary>
+        internal static Uri BuildInstanceUri(string address, int port)
+        {
+            var host = address.Contains(':') && !address.StartsWith('[')
+                ? $"[{address}]"
+                : address;
+            return new Uri($"http://{host}:{port}/");
         }
     }
 }
