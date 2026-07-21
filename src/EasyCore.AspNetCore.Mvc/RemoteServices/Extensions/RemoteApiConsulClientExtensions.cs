@@ -20,6 +20,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         {
             services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
             services.AddHttpContextAccessor();
+            RemoteInterceptorComposer.RegisterCore(services);
 
             services.TryAddSingleton<IConsulClient>(sp =>
             {
@@ -59,7 +60,8 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                 {
                     var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(clientName);
                     var headerProvider = sp.GetRequiredService<IRemoteRequestHeaderProvider>();
-                    return RemoteApiConsulClientFactory.Create(httpClient, headerProvider, iface);
+                    var dispatchProxy = RemoteApiConsulClientFactory.Create(httpClient, headerProvider, iface);
+                    return RemoteInterceptorComposer.Wrap(iface, dispatchProxy, sp);
                 });
             }
 

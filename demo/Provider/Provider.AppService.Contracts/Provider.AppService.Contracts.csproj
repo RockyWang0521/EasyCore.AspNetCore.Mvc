@@ -9,6 +9,9 @@
   <ItemGroup>
     <PackageReference Include="EasyCore.Consul" Version="8.3.0" />
     <PackageReference Include="EasyCore.Dependency" Version="8.3.0" />
+    <PackageReference Include="EasyCore.Invocation" Version="8.3.1" />
+    <PackageReference Include="EasyCore.Polly" Version="8.3.1" />
+    <PackageReference Include="EasyCore.Redis" Version="8.3.1" />
   </ItemGroup>
 
   <ItemGroup>

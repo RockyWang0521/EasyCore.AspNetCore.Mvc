@@ -8,11 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="EasyCore.Consul" Version="8.3.0" />
+    <PackageReference Include="EasyCore.Dependency" Version="8.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Provider\Provider.AppService.Contracts\Provider.AppService.Contracts.csproj" />
-    <ProjectReference Include="..\..\..\..\EasyCore.Dependency\src\EasyCore.Dependency\EasyCore.Dependency.csproj" />
   </ItemGroup>
 
 </Project>

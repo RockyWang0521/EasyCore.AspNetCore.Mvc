@@ -3,6 +3,10 @@ using EasyCore.AspNetCore.Mvc.DynamicApi;
 using EasyCore.AspNetCore.Mvc.RemoteServices;
 using EasyCore.Consul;
 using EasyCore.Dependency;
+using EasyCore.Invocation;
+using EasyCore.Polly;
+using EasyCore.Redis;
+using Provider.AppService.Contracts.Invocations;
 
 namespace Consumer.Host
 {
@@ -14,11 +18,29 @@ namespace Consumer.Host
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new()
+                {
+                    Title = "EasyCore.AspNetCore.Mvc Consumer",
+                    Version = "v1",
+                    Description =
+                        "Remote DispatchProxy + Castle AOP for interface placements (A/B/C).\n" +
+                        "Start Provider :5094 first. Index on Provider: GET /api/ProviderAopDemoIndex/GetIndexAsync\n" +
+                        "Consumer: GET /api/ConsumerTest/GetAopIfaceTypePingAsync, GetAopComboCachedAsync?key=demo, …"
+                });
+            });
 
             builder.Services.AddEasyCoreDynamicApi();
             builder.Services.AddEasyCoreAppServices();
             builder.Services.AddEasyCoreDependency();
+
+            // Interceptors stack onto remote DispatchProxy via RemoteInterceptorComposer.
+            builder.Services.AddEasyCoreInvocation();
+            builder.Services.Invocation<AuditInvocation>(ServiceLifetime.Singleton);
+            builder.Services.AddEasyCorePolly();
+            builder.Services.AddEasyCoreRedis(builder.Configuration.GetSection("EasyCore:Redis"));
+
             builder.Services.AddEasyCoreRemoteApiClients();
             builder.Services.AddEasyCoreRemoteApiConsulClients();
             builder.AddEasyCoreConsul()

@@ -20,6 +20,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
         {
             services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
             services.AddHttpContextAccessor();
+            RemoteInterceptorComposer.RegisterCore(services);
 
             foreach (var iface in RemoteApiRegistrationHelper.FindRemoteInterfaces())
             {
@@ -48,7 +49,8 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                 {
                     var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(clientName);
                     var headerProvider = sp.GetRequiredService<IRemoteRequestHeaderProvider>();
-                    return RemoteApiHostClientFactory.Create(httpClient, null, headerProvider, iface);
+                    var dispatchProxy = RemoteApiHostClientFactory.Create(httpClient, null, headerProvider, iface);
+                    return RemoteInterceptorComposer.Wrap(iface, dispatchProxy, sp);
                 });
             }
 

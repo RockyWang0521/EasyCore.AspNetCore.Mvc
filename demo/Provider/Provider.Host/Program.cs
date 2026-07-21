@@ -4,7 +4,11 @@ using EasyCore.AspNetCore.Mvc.RemoteServices;
 using EasyCore.Consul;
 using EasyCore.Dependency;
 using EasyCore.EFCoreRepository;
+using EasyCore.Invocation;
+using EasyCore.Polly;
+using EasyCore.Redis;
 using Microsoft.EntityFrameworkCore;
+using Provider.AppService.Contracts.Invocations;
 using Provider.EFCore;
 using Provider.EFCore.Entity;
 
@@ -16,9 +20,20 @@ namespace Provider.Host
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddApplicationPart(typeof(Provider.AppService.ProviderTestAppService).Assembly);
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new()
+                {
+                    Title = "EasyCore.AspNetCore.Mvc Provider",
+                    Version = "v1",
+                    Description =
+                        "AOP placements A–F: interface type/method, AppService class/method, Controller, combo.\n" +
+                        "Start: GET /api/ProviderAopDemoIndex/GetIndexAsync"
+                });
+            });
 
             builder.Services.AddDbContext<TestDbContext>();
 
@@ -27,6 +42,12 @@ namespace Provider.Host
             builder.Services.AddEasyCoreDependency();
             builder.Services.AddEasyCoreEFCoreRepository();
             builder.Services.AddEasyCoreRemoteApiClients();
+
+            // AOP for Dynamic API (MVC filters) — independent packages stack via DI.
+            builder.Services.AddEasyCoreInvocation();
+            builder.Services.Invocation<AuditInvocation>(ServiceLifetime.Singleton);
+            builder.Services.AddEasyCorePolly();
+            builder.Services.AddEasyCoreRedis(builder.Configuration.GetSection("EasyCore:Redis"));
 
             // Register this Provider instance into Consul (ServiceName=Provider).
             builder.AddEasyCoreConsul()

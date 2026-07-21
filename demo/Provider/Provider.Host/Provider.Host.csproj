@@ -10,15 +10,15 @@
     <PackageReference Include="EasyCore.Consul" Version="8.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="EasyCore.EFCoreRepository" Version="8.3.0" />
+    <PackageReference Include="EasyCore.Invocation" Version="8.3.1" />
+    <PackageReference Include="EasyCore.Polly" Version="8.3.1" />
+    <PackageReference Include="EasyCore.Redis" Version="8.3.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Provider.AppService\Provider.AppService.csproj" />
     <ProjectReference Include="..\Provider.EFCore\Provider.EFCore.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\..\..\src\EasyCore.AspNetCore.Mvc\EasyCore.AspNetCore.Mvc.csproj" />
   </ItemGroup>
 
 </Project>

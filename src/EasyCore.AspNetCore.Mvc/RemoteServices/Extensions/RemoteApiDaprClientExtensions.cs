@@ -21,6 +21,7 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
             services.AddOptions();
             services.AddHttpContextAccessor();
             services.TryAddSingleton<IRemoteRequestHeaderProvider, HttpContextHeaderProvider>();
+            RemoteInterceptorComposer.RegisterCore(services);
 
             services.AddOptions<DaprOption>()
                 .BindConfiguration("Dapr")
@@ -50,7 +51,8 @@ namespace EasyCore.AspNetCore.Mvc.RemoteServices
                 {
                     var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(clientName);
                     var headerProvider = sp.GetRequiredService<IRemoteRequestHeaderProvider>();
-                    return RemoteApiDaprClientFactory.Create(httpClient, headerProvider, iface);
+                    var dispatchProxy = RemoteApiDaprClientFactory.Create(httpClient, headerProvider, iface);
+                    return RemoteInterceptorComposer.Wrap(iface, dispatchProxy, sp);
                 });
             }
 
