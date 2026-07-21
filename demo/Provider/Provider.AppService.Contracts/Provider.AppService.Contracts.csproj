@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EasyCore.Consul" Version="8.1.0" />
+    <PackageReference Include="EasyCore.Consul" Version="8.3.0" />
+    <PackageReference Include="EasyCore.Dependency" Version="8.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\EasyCore.AspNetCore.Mvc\EasyCore.AspNetCore.Mvc.csproj" />
-    <ProjectReference Include="..\..\..\..\EasyCore.Dependency\src\EasyCore.Dependency\EasyCore.Dependency.csproj" />
   </ItemGroup>
 
 </Project>
