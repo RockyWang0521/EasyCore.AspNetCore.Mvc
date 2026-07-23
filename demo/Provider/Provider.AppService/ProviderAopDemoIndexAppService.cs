@@ -15,7 +15,7 @@ public sealed class ProviderAopDemoIndexAppService : EasyCoreAppService, IProvid
     {
         object index = new
         {
-            tip = "Placement demos for Invocation / Polly / Redis on Dynamic API + Controller + remote interface.",
+            tip = "Placement demos for Invocation / Polly / Redis / UnitOfWork on Dynamic API + Controller + remote interface.",
             placements = new object[]
             {
                 new
@@ -99,6 +99,23 @@ public sealed class ProviderAopDemoIndexAppService : EasyCoreAppService, IProvid
                     },
                     consumer = Array.Empty<string>(),
                     note = "Classic IFilterFactory path"
+                },
+                new
+                {
+                    id = "U1–U4",
+                    where = "UnitOfWork [SaveChanges] (Dynamic API + Controller)",
+                    attrs = "interface type/method, AppService class/method, Controller action",
+                    provider = new[]
+                    {
+                        "POST /api/ProviderUowIfaceType/PostInsertAsync?name=u1",
+                        "POST /api/ProviderUowIfaceMethod/PostInsertTransactionalAsync?name=u2",
+                        "GET /api/ProviderUowIfaceMethod/GetPlainAsync?name=skip",
+                        "POST /api/ProviderUowImplPlacement/PostFromClassAsync?name=u3",
+                        "POST /api/ProviderUowImplPlacement/PostFromMethodTransactionalAsync?name=u3m",
+                        "POST /api/uow-controller/insert?name=u4"
+                    },
+                    consumer = Array.Empty<string>(),
+                    note = "Provider-only persistence via MVC Filter; not remoted"
                 }
             }
         };

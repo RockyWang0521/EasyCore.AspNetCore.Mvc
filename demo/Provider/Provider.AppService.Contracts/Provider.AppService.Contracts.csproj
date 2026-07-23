@@ -12,10 +12,12 @@
     <PackageReference Include="EasyCore.Invocation" Version="8.3.1" />
     <PackageReference Include="EasyCore.Polly" Version="8.3.1" />
     <PackageReference Include="EasyCore.Redis" Version="8.3.1" />
+    <PackageReference Include="EasyCore.UnitOfWork" Version="8.3.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\EasyCore.AspNetCore.Mvc\EasyCore.AspNetCore.Mvc.csproj" />
+    <ProjectReference Include="..\Provider.EFCore\Provider.EFCore.csproj" />
   </ItemGroup>
 
 </Project>

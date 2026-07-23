@@ -7,6 +7,7 @@ using EasyCore.EFCoreRepository;
 using EasyCore.Invocation;
 using EasyCore.Polly;
 using EasyCore.Redis;
+using EasyCore.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Provider.AppService.Contracts.Invocations;
 using Provider.EFCore;
@@ -41,6 +42,7 @@ namespace Provider.Host
             builder.Services.AddEasyCoreAppServices();
             builder.Services.AddEasyCoreDependency();
             builder.Services.AddEasyCoreEFCoreRepository();
+            builder.Services.AddEasyCoreUnitOfWork();
             builder.Services.AddEasyCoreRemoteApiClients();
 
             // AOP for Dynamic API (MVC filters) — independent packages stack via DI.
